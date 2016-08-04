@@ -6,6 +6,7 @@
 /app/Providers/CrmServiceProvider.php
 /app/Providers/FormsServiceProvider.php
 /app/Providers/HotelsServiceProvider.php
+/app/Providers/MarketServiceProvider.php
 
 
 /app/Providers/FacturadirectaServiceProvider.php
