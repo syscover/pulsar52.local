@@ -39,6 +39,8 @@
 /config/langlocale.php
 /config/shoppingcart.php
 /config/market.php
+/config/excel.php
+/config/google_api.php
 /config/pulsar.php
 
 /tests/shopping_cart_tests_helpers/
