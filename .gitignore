@@ -7,7 +7,14 @@
 /app/Providers/FormsServiceProvider.php
 /app/Providers/HotelsServiceProvider.php
 /app/Providers/MarketServiceProvider.php
-
+/app/Providers/FetchServiceProvider.php
+/app/Providers/LangLocaleServiceProvider.php
+/app/Providers/OctopusServiceProvider.php
+/app/Providers/ShoppingCartServiceProvider.php
+/app/Providers/SpasServiceProvider.php
+/app/Providers/WineriesServiceProvider.php
+/app/Providers/ProjectsServiceProvider.php
+/app/Providers/PulsarServiceProvider.php
 
 /app/Providers/FacturadirectaServiceProvider.php
 
