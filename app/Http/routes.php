@@ -26,6 +26,7 @@ Route::group(['middleware' => ['web', 'pulsar.langlocale']], function () {
 
 Route::group(['middleware' => ['web', 'pulsar.langlocale', 'auth:crm']], function() {
     Route::get('/es/account',                                                               ['as'=>'account-es',                'uses'	=> '\App\Http\Controllers\CustomerFrontendController@account']);
+    Route::get('/es/checkout',                                                              ['as'=>'checkout-es',                'uses'	=> '\App\Http\Controllers\MarketFrontendController@checkout']);
 });
 
 Route::group(['middleware' => ['web', 'pulsar.langlocale']], function () {

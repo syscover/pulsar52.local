@@ -114,98 +114,109 @@
         <input type="hidden" name="applyCouponCode">
     </form>
     <br><br><br><br>
-    <div class="col-md-6">
-        <div class="row">
-            <div class="col-md-7">
-                <h4>Subtotal:</h4>
-            </div>
-            <div class="col-md-5">
-                <h3>{{ CartProvider::instance()->getSubtotal() }} €</h3>
-            </div>
-        </div>
-        @foreach(CartProvider::instance()->getTaxRules() as $taxRule)
+    <div class="row">
+        <div class="col-md-6">
             <div class="row">
                 <div class="col-md-7">
-                    <h5>{{ $taxRule->name }} ({{ $taxRule->getTaxRate() }}%)</h5>
+                    <h4>Subtotal:</h4>
                 </div>
                 <div class="col-md-5">
-                    <h5>{{ $taxRule->getTaxAmount() }} €</h5>
+                    <h3>{{ CartProvider::instance()->getSubtotal() }} €</h3>
                 </div>
             </div>
-        @endforeach
-
-        @foreach(CartProvider::instance()->getPriceRules() as $priceRule)
-            <div class="row">
-                @if($priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_SUBTOTAL_PERCENTAGE || $priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_TOTAL_PERCENTAGE)
-                <div class="col-md-7">
-                    <h5>{{ $priceRule->name }} ({{ $priceRule->getDiscountPercentage() }}%)</h5>
-                </div>
-                @endif
-                @if($priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_SUBTOTAL_FIXED_AMOUNT || $priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_TOTAL_FIXED_AMOUNT)
+            @foreach(CartProvider::instance()->getTaxRules() as $taxRule)
+                <div class="row">
                     <div class="col-md-7">
-                        <h5>{{ $priceRule->name }} ({{ $priceRule->getDiscountFixed() }} € )</h5>
+                        <h5>{{ $taxRule->name }} ({{ $taxRule->getTaxRate() }}%)</h5>
                     </div>
-                @endif
-                <div class="col-md-5">
-                    <h5>{{ $priceRule->getDiscountAmount() }}€</h5>
+                    <div class="col-md-5">
+                        <h5>{{ $taxRule->getTaxAmount() }} €</h5>
+                    </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
 
-        <div class="row">
-            <div class="col-md-7">
-                <h4>Total Discount:</h4>
-            </div>
-            <div class="col-md-5">
-                <h3>{{ CartProvider::instance()->getDiscountAmount() }} €</h3>
-            </div>
-        </div>
+            @foreach(CartProvider::instance()->getPriceRules() as $priceRule)
+                <div class="row">
+                    @if($priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_SUBTOTAL_PERCENTAGE || $priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_TOTAL_PERCENTAGE)
+                    <div class="col-md-7">
+                        <h5>{{ $priceRule->name }} ({{ $priceRule->getDiscountPercentage() }}%)</h5>
+                    </div>
+                    @endif
+                    @if($priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_SUBTOTAL_FIXED_AMOUNT || $priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_TOTAL_FIXED_AMOUNT)
+                        <div class="col-md-7">
+                            <h5>{{ $priceRule->name }} ({{ $priceRule->getDiscountFixed() }} € )</h5>
+                        </div>
+                    @endif
+                    <div class="col-md-5">
+                        <h5>{{ $priceRule->getDiscountAmount() }}€</h5>
+                    </div>
+                </div>
+            @endforeach
 
-        <div class="row">
-            <div class="col-md-7">
-                <h4>Total Tax:</h4>
-            </div>
-            <div class="col-md-5">
-                <h3>{{ CartProvider::instance()->getTaxAmount() }} €</h3>
-            </div>
-        </div>
-        {{--<div class="row">--}}
-            {{--<div class="col-md-7">--}}
-                {{--<h4>Coste de envío:</h4>--}}
-            {{--</div>--}}
-            {{--<div class="col-md-5">--}}
-                {{--<h3>{{ CartProvider::instance()->getShippingAmount() }} €</h3>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-        {{--<div class="row">--}}
-            {{--<div class="col-md-7">--}}
-                {{--<h4>Coupon name</h4>--}}
-            {{--</div>--}}
-            {{--<div class="col-md-5">--}}
-                {{--<h3>-9999€</h3>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-
-        <div class="row">
-            <div class="col-md-7">
-                <h4>Total:</h4>
-            </div>
-            <div class="col-md-5">
-                <h3>{{ CartProvider::instance()->getTotal() }} €</h3>
-            </div>
-        </div>
-        <div class="row">
-            <form>
+            <div class="row">
                 <div class="col-md-7">
-                    <input type="text" name="couponCode" placeholder="Coupon code">
+                    <h4>Total Discount:</h4>
                 </div>
                 <div class="col-md-5">
-                    <a id="couponCodeBt" href="#">Apply</a>
+                    <h3>{{ CartProvider::instance()->getDiscountAmount() }} €</h3>
                 </div>
-            </form>
+            </div>
+
+            <div class="row">
+                <div class="col-md-7">
+                    <h4>Total Tax:</h4>
+                </div>
+                <div class="col-md-5">
+                    <h3>{{ CartProvider::instance()->getTaxAmount() }} €</h3>
+                </div>
+            </div>
+            {{--<div class="row">--}}
+                {{--<div class="col-md-7">--}}
+                    {{--<h4>Coste de envío:</h4>--}}
+                {{--</div>--}}
+                {{--<div class="col-md-5">--}}
+                    {{--<h3>{{ CartProvider::instance()->getShippingAmount() }} €</h3>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+            {{--<div class="row">--}}
+                {{--<div class="col-md-7">--}}
+                    {{--<h4>Coupon name</h4>--}}
+                {{--</div>--}}
+                {{--<div class="col-md-5">--}}
+                    {{--<h3>-9999€</h3>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+
+            <div class="row">
+                <div class="col-md-7">
+                    <h4>Total:</h4>
+                </div>
+                <div class="col-md-5">
+                    <h3>{{ CartProvider::instance()->getTotal() }} €</h3>
+                </div>
+            </div>
+            <div class="row">
+                <form>
+                    <div class="col-md-7">
+                        <input type="text" name="couponCode" placeholder="Coupon code">
+                    </div>
+                    <div class="col-md-5">
+                        <a id="couponCodeBt" href="#">Apply</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-    <div class="col-md-12">
-        <h3><a href="{{ route('productList-' . user_lang()) }}">Continue shopping</a></h3>
+    <div class="row">
+        <br>
+        <div class="col-md-12">
+            <a class="btn btn-default" href="{{ route('productList-' . user_lang()) }}">Continue shopping</a>
+        </div>
+    </div>
+    <div class="row">
+        <br>
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ route('checkout-' . user_lang()) }}">Checkout</a>
+        </div>
     </div>
 @stop

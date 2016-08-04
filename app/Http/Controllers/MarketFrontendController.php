@@ -92,4 +92,9 @@ class MarketFrontendController extends Controller
 
         return view('www.content.product', $response);
     }
+
+    public function checkout()
+    {
+        return view('www.content.checkout');
+    }
 }
