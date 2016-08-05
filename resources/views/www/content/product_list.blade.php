@@ -16,12 +16,16 @@
             <br>
             {{ $product->getPrice() }} €<br>
 
-            @if(config('market.taxProductPrices') == \Syscover\ShoppingCart\Cart::PRICE_WITH_TAX)
+            @if(config('market.taxProductDisplayPrices') == \Syscover\ShoppingCart\Cart::PRICE_WITH_TAX)
                 <small><strong>{{ trans_choice('market::pulsar.tax_included', 1) }} ({{ $product->getTaxAmount() }}€)</strong></small>
             @endif
-            @if(config('market.taxProductPrices') == \Syscover\ShoppingCart\Cart::PRICE_WITHOUT_TAX)
+            @if(config('market.taxProductDisplayPrices') == \Syscover\ShoppingCart\Cart::PRICE_WITHOUT_TAX)
                 <small><strong>{{ trans_choice('market::pulsar.tax_not_included', 1) }} ({{ $product->getTaxAmount() }}€)</strong></small>
             @endif
+            @foreach($product->taxRules as $taxRule)
+                <br>
+                <small>{{ trans($taxRule->translation_104) }} {{ $taxRule->tax_rate_103 }}%</small>
+            @endforeach
             <br><br>
             <a href="{{ route('product-'. user_lang(), ['category' => $product->mappedCategory->slug_110, 'slug' => $product->slug_112]) }}">Ver producto</a>
             <br>

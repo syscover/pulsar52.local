@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Syscover\Market\Models\GroupCustomerClassTax;
+use Syscover\Pulsar\Models\Package;
 
 class AuthController extends Controller
 {
@@ -79,7 +81,7 @@ class AuthController extends Controller
         if(auth('crm')->attempt($credentials, $request->has('remember')))
         {
             // check if customer is active
-            if(!auth('crm')->user()->active_301)
+            if(! auth('crm')->user()->active_301)
             {
                 auth('crm')->logout();
 
@@ -97,6 +99,16 @@ class AuthController extends Controller
                         'message'   => 'User inactive'
                     ])->withInput();
                 }
+            }
+
+            // set customer class tax if market package is installed
+            $marketPackage = Package::builder()->find(12);
+            if($marketPackage != null && $marketPackage->active_012 == true)
+            {
+                $groupCustomerClassTax = GroupCustomerClassTax::builder()->where('group_id_102', auth('crm')->user()->group_id_301)->first();
+
+                if($groupCustomerClassTax != null)
+                    auth('crm')->user()->classTax = $groupCustomerClassTax->id_100;
             }
 
             if($request->input('responseType') == 'json')

@@ -57,8 +57,8 @@ class ShoppingCartController extends Controller
 
         // get tax rule with default parameters
         $taxRules = TaxRule::builder()
-            ->where('country_id_103', config('market.taxDefaultCountry'))
-            ->where('customer_class_tax_id_106', config('market.taxDefaultCustomerClass'))
+            ->where('country_id_103', config('market.taxCountry'))
+            ->where('customer_class_tax_id_106', config('market.taxCustomerClass'))
             ->where('product_class_tax_id_107', $product->product_class_tax_id_111)
             ->orderBy('priority_104', 'asc')
             ->get();
@@ -74,9 +74,6 @@ class ShoppingCartController extends Controller
                 $taxRule->sort_order_104
             );
         }
-
-
-        //$parameters['taxes'] = TaxLibrary::taxCalculate($parameters['object']->price_111, $taxRules);
 
         // Know if product is transportable
         $isTransportable = $product->price_type_id_111 == 2 || $product->price_type_id_111 == 3? true : false;

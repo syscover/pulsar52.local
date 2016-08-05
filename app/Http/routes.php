@@ -1,7 +1,7 @@
 <?php
 
 // Atención usar middlelware langlocale.pulsar para abarcar todas las rutas, para obtener el userLang de la session
-Route::group(['middleware' => ['web', 'pulsar.langlocale']], function () {
+Route::group(['middleware' => ['web', 'pulsar.langLocale', 'pulsar.taxRule']], function () {
     
     Route::get('/',                                                                         ['as'=>'home',                      'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
     Route::get('/es',                                                                       ['as'=>'home-es',                   'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
@@ -24,12 +24,12 @@ Route::group(['middleware' => ['web', 'pulsar.langlocale']], function () {
     Route::put('/es/account/sing-in',                                                       ['as'=>'put-singIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@putSingIn']);
 });
 
-Route::group(['middleware' => ['web', 'pulsar.langlocale', 'auth:crm']], function() {
+Route::group(['middleware' => ['web', 'pulsar.langLocale', 'auth:crm']], function() {
     Route::get('/es/account',                                                               ['as'=>'account-es',                'uses'	=> '\App\Http\Controllers\CustomerFrontendController@account']);
     Route::get('/es/checkout',                                                              ['as'=>'checkout-es',                'uses'	=> '\App\Http\Controllers\MarketFrontendController@checkout']);
 });
 
-Route::group(['middleware' => ['web', 'pulsar.langlocale']], function () {
+Route::group(['middleware' => ['web', 'pulsar.langLocale']], function () {
     Route::post('/account/customer/set/auth',                                               ['as' => 'setAuth',                 'uses' => '\App\Http\Controllers\Auth\AuthController@authenticate']);
 
 });
