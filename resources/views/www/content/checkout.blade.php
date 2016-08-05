@@ -186,7 +186,6 @@
                     {{--<h3>-9999€</h3>--}}
                 {{--</div>--}}
             {{--</div>--}}
-
             <div class="row">
                 <div class="col-md-7">
                     <h4>Total:</h4>
