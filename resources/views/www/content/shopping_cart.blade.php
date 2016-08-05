@@ -213,10 +213,12 @@
             <a class="btn btn-default" href="{{ route('productList-' . user_lang()) }}">Continue shopping</a>
         </div>
     </div>
+    @if($cartItems->count() > 0)
     <div class="row">
         <br>
         <div class="col-md-12">
             <a class="btn btn-primary" href="{{ route('checkout-' . user_lang()) }}">Checkout</a>
         </div>
     </div>
+    @endif
 @stop

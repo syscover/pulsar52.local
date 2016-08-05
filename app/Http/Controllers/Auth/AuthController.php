@@ -102,13 +102,13 @@ class AuthController extends Controller
             if($request->input('responseType') == 'json')
             {
                 return response()->json([
-                    'status' => 'success',
-                    'customer' => auth('crm')->user()
+                    'status'    => 'success',
+                    'customer'  => auth('crm')->user()
                 ]);
             }
             else
             {
-                return redirect($this->redirectTo);
+                return redirect()->intended($this->redirectTo);
             }
         }
 
