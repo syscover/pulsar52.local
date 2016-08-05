@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Syscover\Market\Models\Product;
 use Syscover\Market\Models\ProductsCategories;
 use Syscover\Pulsar\Models\Attachment;
+use Syscover\ShoppingCart\Facades\CartProvider;
 
 /**
  * Class MarketFrontendController
@@ -95,6 +96,8 @@ class MarketFrontendController extends Controller
 
     public function checkout()
     {
-        return view('www.content.checkout');
+        $response['cartItems'] = CartProvider::instance()->getCartItems();
+
+        return view('www.content.checkout', $response);
     }
 }

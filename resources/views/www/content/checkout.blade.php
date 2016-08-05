@@ -3,31 +3,10 @@
 @section('title', 'Shopping cart')
 
 @section('head')
-    <script>
-        $(document).ready(function() {
-            $("#couponCodeBt").on('click', function() {
-                $('[name=applyCouponCode]').val($('[name=couponCode]').val());
-                $('#shoppingCartForm').submit();
-            });
-
-            $(".increase, .decrease").on('click', function() {
-                var input = $(this).siblings('input[type=number]');
-                if ($(this).hasClass('increase'))
-                {
-                    input.val(parseInt(input.val()) + 1);
-                }
-                else if($(this).hasClass('decrease') && input.val() > 0)
-                {
-                    input.val(parseInt(input.val()) - 1);
-                }
-                $('#shoppingCartForm').submit();
-            });
-        });
-    </script>
 @stop
 
 @section('content')
-    <h1>Shopping cart</h1>
+    <h1>Checkout (Step 1)</h1>
 
     <!-- heads -->
     <div class="row">
@@ -58,9 +37,6 @@
         <div class="col-md-1">
             <h5>Total</h5>
         </div>
-        <div class="col-md-1">
-            <h5>Delete</h5>
-        </div>
     </div>
     <!-- /heads -->
 
@@ -78,9 +54,6 @@
                 </div>
                 <div class="col-md-1">
                     <h5>{{ $item->getQuantity() }}</h5>
-                    <input class="hidden" type="number" name="{{ $item->rowId }}" value="{{ $item->getQuantity() }}">
-                    <a href="#" class="increase"><i class="glyphicon glyphicon-plus"></i></a>
-                    <a href="#" class="decrease"><i class="glyphicon glyphicon-minus"></i></a>
                 </div>
                 <div class="col-md-1">
                     <h4>{{ $item->getSubtotal() }} €</h4>
@@ -101,11 +74,6 @@
                 </div>
                 <div class="col-md-1">
                     <h4>{{ $item->getTotal() }} €</h4>
-                </div>
-                <div class="col-md-1">
-                    <a href="{{ route('deleteShoppingCart-' . user_lang(), ['rowId' => $item->rowId]) }}">
-                        <i class="glyphicon glyphicon-remove"></i>
-                    </a>
                 </div>
             </div>
         @endforeach
@@ -194,22 +162,9 @@
                     <h3>{{ CartProvider::instance()->getTotal() }} €</h3>
                 </div>
             </div>
-            <div class="row">
-                <form>
-                    <div class="col-md-7">
-                        <input type="text" name="couponCode" placeholder="Coupon code">
-                    </div>
-                    <div class="col-md-5">
-                        <a id="couponCodeBt" href="#">Apply</a>
-                    </div>
-                </form>
-            </div>
         </div>
-    </div>
-    <div class="row">
-        <br>
-        <div class="col-md-12">
-            <a class="btn btn-default" href="{{ route('productList-' . user_lang()) }}">Continue shopping</a>
+        <div class="col-md-6">
+            <h4>Shipping:</h4>
         </div>
     </div>
     <div class="row">

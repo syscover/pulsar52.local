@@ -21,18 +21,8 @@ class ShoppingCartController extends Controller
 
     public function showShoppingCart()
     {
-        $response = [];
-
+        // get cart items from shoppingCart
         $response['cartItems'] = CartProvider::instance()->getCartItems();
-
-        if(count($response['cartItems']) > 0)
-        {
-            // cart contain products
-        }
-        else
-        {
-            // cart is empty
-        }
 
         return view('www.content.shopping_cart', $response);
     }
