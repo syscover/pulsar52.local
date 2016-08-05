@@ -6,32 +6,33 @@
 @stop
 
 @section('content')
+    <?php $i=0; ?>
     @foreach($products as $product)
-    <div class="row">
-        <div class="col-md-12">
-            <h3>
-                <a href="{{ route('product-'. user_lang(), ['category' => $product->mappedCategory->slug_110, 'slug' => $product->slug_112]) }}">{{ $product->name_112 }}</a>
-            </h3>
-            {!! $product->description_112 !!}
-            <br>
-            {{ $product->getPrice() }} €<br>
-
-            @if(config('market.taxProductDisplayPrices') == \Syscover\ShoppingCart\Cart::PRICE_WITH_TAX)
-                <small><strong>{{ trans_choice('market::pulsar.tax_included', 1) }} ({{ $product->getTaxAmount() }}€)</strong></small>
-            @endif
-            @if(config('market.taxProductDisplayPrices') == \Syscover\ShoppingCart\Cart::PRICE_WITHOUT_TAX)
-                <small><strong>{{ trans_choice('market::pulsar.tax_not_included', 1) }} ({{ $product->getTaxAmount() }}€)</strong></small>
-            @endif
-            @foreach($product->taxRules as $taxRule)
+        <div class="row">
+            <div class="col-md-12">
+                <h3>
+                    <a href="{{ route('product-'. user_lang(), ['category' => $product->mappedCategory->slug_110, 'slug' => $product->slug_112]) }}">{{ $product->name_112 }}</a>
+                </h3>
+                {!! $product->description_112 !!}
                 <br>
-                <small>{{ trans($taxRule->translation_104) }} {{ $taxRule->tax_rate_103 }}%</small>
-            @endforeach
-            <br><br>
-            <a href="{{ route('product-'. user_lang(), ['category' => $product->mappedCategory->slug_110, 'slug' => $product->slug_112]) }}">Ver producto</a>
-            <br>
-            <a href="{{ route('addShoppingCart-' . user_lang(), ['slug' => $product->slug_112]) }}">Añadir a carro de compra</a>
-            <hr>
+                {{ $product->getPrice() }} €<br>
+
+                @if(config('market.taxProductDisplayPrices') == \Syscover\ShoppingCart\Cart::PRICE_WITH_TAX)
+                    <small><strong>{{ trans_choice('market::pulsar.tax_included', 1) }} ({{ $product->getTaxAmount() }}€)</strong></small>
+                @endif
+                @if(config('market.taxProductDisplayPrices') == \Syscover\ShoppingCart\Cart::PRICE_WITHOUT_TAX)
+                    <small><strong>{{ trans_choice('market::pulsar.tax_not_included', 1) }} ({{ $product->getTaxAmount() }}€)</strong></small>
+                @endif
+                @foreach($product->taxRules as $taxRule)
+                    <br>
+                    <small>{{ trans($taxRule->translation_104) }} {{ $taxRule->tax_rate_103 }}%</small>
+                @endforeach
+                <br><br>
+                <a href="{{ route('product-'. user_lang(), ['category' => $product->mappedCategory->slug_110, 'slug' => $product->slug_112]) }}">Ver producto</a>
+                <br>
+                <a href="{{ route('addShoppingCart-' . user_lang(), ['slug' => $product->slug_112]) }}">Añadir a carro de compra</a>
+                <hr>
+            </div>
         </div>
-    </div>
     @endforeach
 @stop
