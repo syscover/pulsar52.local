@@ -24,6 +24,8 @@ class ShoppingCartController extends Controller
         // get cart items from shoppingCart
         $response['cartItems'] = CartProvider::instance()->getCartItems();
 
+        //dd($response['cartItems']);
+
         return view('www.content.shopping_cart', $response);
     }
 
@@ -78,9 +80,13 @@ class ShoppingCartController extends Controller
         // Know if product is transportable
         $isTransportable = $product->price_type_id_111 == 2 || $product->price_type_id_111 == 3? true : false;
 
-        // intance row to add pro
+        // when get price from product, internally calculate subtotal and total.
+        // we don't want save this object on shopping cart, if login user with different prices and add same product, will be different because the product will have different prices
+        $optionsProduct = $product;
+
+        // intance row to add product
         CartProvider::instance()->add(new Item($product->id_111, $product->name_112, 1, $product->price_111, $product->weight_111, $isTransportable, $taxRulesShoppingCart,[
-            'product' => $product
+            'product' => $optionsProduct
         ]));
         
         return redirect()->route('shoppingCart-' . session('userLang'));
