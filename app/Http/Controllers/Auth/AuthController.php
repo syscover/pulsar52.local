@@ -151,10 +151,9 @@ class AuthController extends Controller
                         // add tax rules to item
                         foreach ($itemTaxRules as $itemTaxRule)
                         {
-                            //$item->addTaxRule($itemTaxRule->getTaxRuleShoppingCart());
+                            $item->addTaxRule($itemTaxRule->getTaxRuleShoppingCart());
                         }
                     }
-
                     // force to calculate amounts
                     $item->calculateAmounts(Cart::PRICE_WITHOUT_TAX);
                 }
