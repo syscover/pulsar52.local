@@ -7,7 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Syscover\Market\Models\GroupCustomerClassTax;
+use Syscover\Market\Models\Product;
+use Syscover\Market\Models\TaxRule;
 use Syscover\Pulsar\Models\Package;
+use Syscover\ShoppingCart\Cart;
+use Syscover\ShoppingCart\CartItemTaxRules;
+use Syscover\ShoppingCart\Facades\CartProvider;
 
 class AuthController extends Controller
 {
@@ -109,6 +114,50 @@ class AuthController extends Controller
 
                 if($groupCustomerClassTax != null)
                     auth('crm')->user()->classTax = $groupCustomerClassTax->id_100;
+            }
+
+            // Authentication OK!
+            // Reload Shopping cart with new tax rules
+            if(CartProvider::instance()->getCartItems()->count() > 0)
+            {
+                $cartProducts = Product::builder()
+                    ->whereIn('id_111', CartProvider::instance()->getCartItems()->pluck('id'))
+                    ->groupBy('product_class_tax_id_111')
+                    ->get();
+
+                $taxRules = TaxRule::builder()
+                    ->where('country_id_103', empty(auth('crm')->user()->country_id_301)? config('market.taxCountry') : auth('crm')->user()->country_id_301)
+                    ->where('customer_class_tax_id_106', empty(auth('crm')->user()->classTax)? config('market.taxCustomerClass') : auth('crm')->user()->classTax)
+                    ->whereIn('product_class_tax_id_107', $cartProducts->pluck('product_class_tax_id_111')->toArray())
+                    ->orderBy('priority_104', 'asc')
+                    ->get();
+
+                $taxRules = $taxRules->groupBy('product_class_tax_id_107')
+                    ->map(function($taxRule, $key){
+                        return $taxRule->sortBy('priority_104');
+                    });
+
+                foreach (CartProvider::instance()->getCartItems() as $item)
+                {
+                    // reset tax rules from item
+                    $item->taxRules = new CartItemTaxRules();
+
+                    // if there ara any tax rule, and product with tax rule
+                    if($taxRules->count() > 0 && $cartProducts->where('id_111', $item->id)->count() > 0 && $taxRules->get($cartProducts->where('id_111', $item->id)->first())->count() > 0)
+                    {
+                        // get tax rules from item
+                        $itemTaxRules = $taxRules->get($cartProducts->where('id_111',$item->id)->first()->product_class_tax_id_111);
+
+                        // add tax rules to item
+                        foreach ($itemTaxRules as $itemTaxRule)
+                        {
+                            //$item->addTaxRule($itemTaxRule->getTaxRuleShoppingCart());
+                        }
+                    }
+
+                    // force to calculate amounts
+                    $item->calculateAmounts(Cart::PRICE_WITHOUT_TAX);
+                }
             }
 
             if($request->input('responseType') == 'json')
