@@ -221,7 +221,7 @@ class AuthController extends Controller
             foreach (CartProvider::instance()->getCartItems() as $item)
             {
                 // reset tax rules from item
-                $item->taxRules = new CartItemTaxRules();
+                $item->resetTaxRules();
 
                 // if there ara any tax rule, and product with tax rule
                 if($taxRules->count() > 0 && $cartProducts->where('id_111', $item->id)->count() > 0 && $taxRules->get($cartProducts->where('id_111', $item->id)->first()->product_class_tax_id_111)->count() > 0)
