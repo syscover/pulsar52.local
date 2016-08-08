@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Syscover\Market\Models\PaymentMethod;
 use Syscover\Market\Models\Product;
 use Syscover\Market\Models\ProductsCategories;
 use Syscover\Market\Models\TaxRule;
@@ -127,10 +128,103 @@ class MarketFrontendController extends Controller
         return view('www.content.product', $response);
     }
 
-    public function checkout()
+    public function getCheckout01()
     {
-        $response['cartItems'] = CartProvider::instance()->getCartItems();
+        $response['cartItems']  = CartProvider::instance()->getCartItems();
+        $response['customer']   = auth('crm')->user();
 
-        return view('www.content.checkout', $response);
+        return view('www.content.checkout_01', $response);
+    }
+
+    public function postCheckout01(Request $request)
+    {
+        $response['cartItems']  = CartProvider::instance()->getCartItems();
+        $response['customer']   = auth('crm')->user();
+
+        // set shipping on shopping cart
+        CartProvider::instance()->setShipping([
+            'name'              => $request->input('name'),
+            'surname'           => $request->input('surname'),
+            'country'           => $request->input('country'),
+            'territorialArea1'  => $request->input('territorialArea1'),
+            'territorialArea2'  => $request->input('territorialArea2'),
+            'territorialArea3'  => $request->input('territorialArea3'),
+            'cp'                => $request->input('cp'),
+            'address'           => $request->input('address'),
+        ]);
+
+        return redirect()->route('getCheckout02-' . session('userLang'));
+    }
+
+    public function getCheckout02()
+    {
+        $response['cartItems']      = CartProvider::instance()->getCartItems();
+        $response['customer']       = auth('crm')->user();
+        $response['shipping']       = CartProvider::instance()->getShipping();
+
+        $response['paymentMethods'] = PaymentMethod::builder()
+            ->where('lang_id_115', user_lang())
+            ->where('active_115', true)
+            ->orderBy('sorting_115', 'asc')
+            ->get();
+
+        return view('www.content.checkout_02', $response);
+    }
+
+    public function postCheckout02(Request $request)
+    {
+        // create data order
+        $orderDate  = date('U');
+        $customer   = auth('crm')->user();
+
+        // create order
+        $orderAux = [
+            'date_116'                          => $orderDate,
+            'date_text_116'				        => date(config('pulsar.datePattern') . ' H:i', $orderDate),
+            'status_id_116'                     => 1, // Outstanding
+            'ip_116'                            => $request->ip(),  // customer IP
+            'payment_method_id_116'             => $request->input('paymentMethod'),
+            'comments_116'                      => null,
+
+            'has_gift_116'                      => false,
+            'gift_from_116'                     => null,
+            'gift_to_116'                       => null,
+            'gift_message_116'                  => null,
+
+            'subtotal_116'                      => CartProvider::instance()->subtotal(),
+            'shipping_116'                      => CartProvider::instance()->hasFreeShipping()? 0 :  CartProvider::instance()->getShippingAmount(),
+            'row_discount_amount_116'           => 0,
+            'total_discount_percentage_116'     => 0,
+            'total_discount_amount_116'         => CartProvider::instance()->discount(),
+            'tax_amount_116'                    => 0,
+            'total_116'                         => CartProvider::instance()->total(),
+
+            'customer_id_116'                   => $customer->id_301,
+            'customer_company_116'              => $customer->company_301,
+            'customer_tin_116'                  => $customer->tin_301,
+            'customer_name_116'                 => $customer->name_301,
+            'customer_surname_116'              => $customer->surname_301,
+            'customer_email_116'                => $customer->email_301,
+            'customer_phone_116'                => $customer->phone_301,
+            'customer_mobile_116'               => $customer->mobile_301,
+
+            'invoice_country_id_116'            => $customer->country_id_301,
+            'invoice_territorial_area_1_id_116' => $customer->territorial_area_1_id_301,
+            'invoice_territorial_area_2_id_116' => $customer->territorial_area_2_id_301,
+            'invoice_territorial_area_3_id_116' => $customer->territorial_area_3_id_301,
+            'invoice_cp_116'                    => $customer->cp_301,
+            'invoice_locality_116'              => $customer->locality_301,
+            'invoice_address_116'               => $customer->address_301,
+            'invoice_latitude_116'              => null,
+            'invoice_longitude_116'             => null,
+            'has_invoice_116'                   => $request->has('hasInvoice'),
+            'invoiced_116'                      => false,
+
+            // comprobamos si hay envío que realizar
+            'has_shipping_116'                  => $request->input('dataShipping') == 'diff' || $request->input('dataShipping') == 'same'? true : false
+        ];
+
+        // create order in database
+        $order = Order::create($orderAux);
     }
 }

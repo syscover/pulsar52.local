@@ -26,7 +26,10 @@ Route::group(['middleware' => ['web', 'pulsar.langLocale', 'pulsar.taxRule']], f
 
 Route::group(['middleware' => ['web', 'pulsar.langLocale', 'auth:crm']], function() {
     Route::get('/es/account',                                                               ['as'=>'account-es',                'uses'	=> '\App\Http\Controllers\CustomerFrontendController@account']);
-    Route::get('/es/checkout',                                                              ['as'=>'checkout-es',                'uses'	=> '\App\Http\Controllers\MarketFrontendController@checkout']);
+    Route::get('/es/checkout/shipping',                                                     ['as'=>'getCheckout01-es',          'uses'	=> '\App\Http\Controllers\MarketFrontendController@getCheckout01']);
+    Route::post('/es/checkout/shipping',                                                    ['as'=>'postCheckout01-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout01']);
+    Route::get('/es/checkout/payment',                                                      ['as'=>'getCheckout02-es',          'uses'	=> '\App\Http\Controllers\MarketFrontendController@getCheckout02']);
+    Route::post('/es/checkout/payment',                                                     ['as'=>'postCheckout02-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout02']);
 });
 
 Route::group(['middleware' => ['web', 'pulsar.langLocale']], function () {

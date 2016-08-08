@@ -3,31 +3,33 @@
 @section('title', 'Shopping cart')
 
 @section('head')
+    @parent
+    <script src="{{ asset('packages/syscover/pulsar/vendor/getaddress/js/jquery.getaddress.js') }}"></script>
+
     <script>
         $(document).ready(function() {
-            $("#couponCodeBt").on('click', function() {
-                $('[name=applyCouponCode]').val($('[name=couponCode]').val());
-                $('#shoppingCartForm').submit();
-            });
+            $.getAddress({
+                id:                         '01',
+                type:                       'laravel',
+                appName:                    'pulsar',
+                token:                      '{{ csrf_token() }}',
+                lang:                       '{{ config('app.locale') }}',
+                highlightCountrys:          ['ES','US'],
 
-            $(".increase, .decrease").on('click', function() {
-                var input = $(this).siblings('input[type=number]');
-                if ($(this).hasClass('increase'))
-                {
-                    input.val(parseInt(input.val()) + 1);
-                }
-                else if($(this).hasClass('decrease') && input.val() > 0)
-                {
-                    input.val(parseInt(input.val()) - 1);
-                }
-                $('#shoppingCartForm').submit();
+                useSeparatorHighlight:      true,
+                textSeparatorHighlight:     '------------------',
+
+                countryValue:               '{{ old('country', isset($customer->country_id_301)? $customer->country_id_301 : null) }}',
+                territorialArea1Value:      '{{ old('territorialArea1', isset($customer->territorial_area_1_id_301)? $customer->territorial_area_1_id_301 : null) }}',
+                territorialArea2Value:      '{{ old('territorialArea2', isset($customer->territorial_area_2_id_301)? $customer->territorial_area_2_id_301 : null) }}',
+                territorialArea3Value:      '{{ old('territorialArea3', isset($customer->territorial_area_3_id_301)? $customer->territorial_area_3_id_301 : null) }}'
             });
-        });
+        })
     </script>
 @stop
 
 @section('content')
-    <h1>Shopping cart</h1>
+    <h1>Checkout (Step 1 - shipping)</h1>
 
     <!-- heads -->
     <div class="row">
@@ -58,9 +60,6 @@
         <div class="col-md-1">
             <h5>Total</h5>
         </div>
-        <div class="col-md-1">
-            <h5>Delete</h5>
-        </div>
     </div>
     <!-- /heads -->
 
@@ -78,9 +77,6 @@
                 </div>
                 <div class="col-md-1">
                     <h5>{{ $item->getQuantity() }}</h5>
-                    <input class="hidden" type="number" name="{{ $item->rowId }}" value="{{ $item->getQuantity() }}">
-                    <a href="#" class="increase"><i class="glyphicon glyphicon-plus"></i></a>
-                    <a href="#" class="decrease"><i class="glyphicon glyphicon-minus"></i></a>
                 </div>
                 <div class="col-md-1">
                     <h4>{{ $item->getSubtotal() }} €</h4>
@@ -102,11 +98,6 @@
                 <div class="col-md-1">
                     <h4>{{ $item->getTotal() }} €</h4>
                 </div>
-                <div class="col-md-1">
-                    <a href="{{ route('deleteShoppingCart-' . user_lang(), ['rowId' => $item->rowId]) }}">
-                        <i class="glyphicon glyphicon-remove"></i>
-                    </a>
-                </div>
             </div>
         @endforeach
         {{ csrf_field() }}
@@ -127,10 +118,10 @@
             @foreach(CartProvider::instance()->getTaxRules() as $taxRule)
                 <div class="row">
                     <div class="col-md-7">
-                        <h4>{{ $taxRule->name }} ({{ $taxRule->getTaxRate() }}%)</h4>
+                        <h5>{{ $taxRule->name }} ({{ $taxRule->getTaxRate() }}%)</h5>
                     </div>
                     <div class="col-md-5">
-                        <h4>{{ $taxRule->getTaxAmount() }} €</h4>
+                        <h5>{{ $taxRule->getTaxAmount() }} €</h5>
                     </div>
                 </div>
             @endforeach
@@ -139,12 +130,12 @@
                 <div class="row">
                     @if($priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_SUBTOTAL_PERCENTAGE || $priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_TOTAL_PERCENTAGE)
                     <div class="col-md-7">
-                        <h4>{{ $priceRule->name }} ({{ $priceRule->getDiscountPercentage() }}%)</h4>
+                        <h5>{{ $priceRule->name }} ({{ $priceRule->getDiscountPercentage() }}%)</h5>
                     </div>
                     @endif
                     @if($priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_SUBTOTAL_FIXED_AMOUNT || $priceRule->discountType == \Syscover\ShoppingCart\PriceRule::DISCOUNT_TOTAL_FIXED_AMOUNT)
                         <div class="col-md-7">
-                            <h4>{{ $priceRule->name }} ({{ $priceRule->getDiscountFixed() }} € )</h4>
+                            <h5>{{ $priceRule->name }} ({{ $priceRule->getDiscountFixed() }} € )</h5>
                         </div>
                     @endif
                     <div class="col-md-5">
@@ -186,7 +177,6 @@
                     {{--<h3>-9999€</h3>--}}
                 {{--</div>--}}
             {{--</div>--}}
-
             <div class="row">
                 <div class="col-md-7">
                     <h4>Total:</h4>
@@ -195,30 +185,60 @@
                     <h4>{{ CartProvider::instance()->getTotal() }} €</h4>
                 </div>
             </div>
-            <div class="row">
-                <form>
-                    <div class="col-md-7">
-                        <input type="text" name="couponCode" placeholder="Coupon code">
+        </div>
+        <div class="col-md-6">
+            <h4>Shipping</h4>
+            <form action="{{ route('postCheckout01-' . user_lang()) }}" method="post">
+                {{ csrf_field() }}
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{ empty($customer->name_301)?: $customer->name_301 }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="surname">Surname</label>
+                    <input type="text" class="form-control" id="surname" name="surname" placeholder="Surname" value="{{ empty($customer->surname_301)?: $customer->surname_301 }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <select class="form-control" id="country" name="country" required>
+                    </select>
+                </div>
+                <div class="form-group" id="territorialArea1Wrapper">
+                    <label for="territorialArea1" id="territorialArea1Label"></label>
+                    <select class="form-control" id="territorialArea1" name="territorialArea1" required>
+                    </select>
+                </div>
+                <div class="form-group" id="territorialArea2Wrapper">
+                    <label for="territorialArea2" id="territorialArea2Label"></label>
+                    <select class="form-control" id="territorialArea2" name="territorialArea2" required>
+                    </select>
+                </div>
+                <div class="form-group" id="territorialArea3Wrapper">
+                    <label for="territorialArea3" id="territorialArea3Label"></label>
+                    <select class="form-control" id="territorialArea3" name="territorialArea3" required>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cp">CP</label>
+                    <input type="text" class="form-control" id="cp" name="cp" placeholder="CP" value="{{ empty($customer->cp_301)?: $customer->cp_301 }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="{{ empty($customer->address_301)?: $customer->address_301 }}" required>
+                </div>
+                @if (count($errors) > 0)
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
-                    <div class="col-md-5">
-                        <a id="couponCodeBt" href="#">Apply</a>
-                    </div>
-                </form>
-            </div>
+                @endif
+                <button type="submit" class="btn btn-primary">Nex step</button>
+            </form>
         </div>
     </div>
-    <div class="row">
-        <br>
-        <div class="col-md-12">
-            <a class="btn btn-default" href="{{ route('productList-' . user_lang()) }}">Continue shopping</a>
-        </div>
-    </div>
-    @if($cartItems->count() > 0)
-    <div class="row">
-        <br>
-        <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ route('getCheckout01-' . user_lang()) }}">Checkout</a>
-        </div>
-    </div>
-    @endif
 @stop

@@ -3,10 +3,11 @@
 @section('title', 'Shopping cart')
 
 @section('head')
+    @parent
 @stop
 
 @section('content')
-    <h1>Checkout (Step 1)</h1>
+    <h1>Checkout (Step 2 - payment)</h1>
 
     <!-- heads -->
     <div class="row">
@@ -89,7 +90,7 @@
                     <h4>Subtotal:</h4>
                 </div>
                 <div class="col-md-5">
-                    <h3>{{ CartProvider::instance()->getSubtotal() }} €</h3>
+                    <h4>{{ CartProvider::instance()->getSubtotal() }} €</h4>
                 </div>
             </div>
             @foreach(CartProvider::instance()->getTaxRules() as $taxRule)
@@ -126,7 +127,7 @@
                     <h4>Total Discount:</h4>
                 </div>
                 <div class="col-md-5">
-                    <h3>{{ CartProvider::instance()->getDiscountAmount() }} €</h3>
+                    <h4>{{ CartProvider::instance()->getDiscountAmount() }} €</h4>
                 </div>
             </div>
 
@@ -135,7 +136,7 @@
                     <h4>Total Tax:</h4>
                 </div>
                 <div class="col-md-5">
-                    <h3>{{ CartProvider::instance()->getTaxAmount() }} €</h3>
+                    <h4>{{ CartProvider::instance()->getTaxAmount() }} €</h4>
                 </div>
             </div>
             {{--<div class="row">--}}
@@ -159,18 +160,58 @@
                     <h4>Total:</h4>
                 </div>
                 <div class="col-md-5">
-                    <h3>{{ CartProvider::instance()->getTotal() }} €</h3>
+                    <h4>{{ CartProvider::instance()->getTotal() }} €</h4>
                 </div>
             </div>
+            <h3>Payment</h3>
+            <form action="{{ route('postCheckout02-' . user_lang()) }}" method="post">
+                @foreach($paymentMethods as $paymentMethod)
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="paymentMethod" value="{{ $paymentMethod->id_115 }}">
+                            {{ $paymentMethod->name_115 }}
+                        </label>
+                    </div>
+                @endforeach
+                <button type="submit" class="btn btn-primary">Pay</button>
+            </form>
         </div>
         <div class="col-md-6">
-            <h4>Shipping:</h4>
-        </div>
-    </div>
-    <div class="row">
-        <br>
-        <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ route('checkout-' . user_lang()) }}">Checkout</a>
+            <h3>Shipping</h3>
+            <div class="form-group">
+                <label>Name</label><br>
+                {{ $shipping['name'] }}
+            </div>
+            <div class="form-group">
+                <label>Surname</label><br>
+                {{ $shipping['surname'] }}
+            </div>
+
+            <div class="form-group">
+                <label>Country</label><br>
+                {{ $shipping['country'] }}
+            </div>
+            <div class="form-group">
+                <label>??</label><br>
+                {{ $shipping['territorialArea1'] }}
+            </div>
+            <div class="form-group">
+                <label>??</label><br>
+                {{ $shipping['territorialArea2'] }}
+            </div>
+            <div class="form-group">
+                <label>??</label><br>
+                {{ $shipping['territorialArea3'] }}
+            </div>
+
+            <div class="form-group">
+                <label for="cp">CP</label><br>
+                {{ $shipping['cp'] }}
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label><br>
+                {{ $shipping['address'] }}
+            </div>
         </div>
     </div>
 @stop
