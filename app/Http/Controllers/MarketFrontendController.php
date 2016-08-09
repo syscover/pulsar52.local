@@ -1,6 +1,10 @@
 <?php namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Sermepa\Tpv\Tpv;
+use Syscover\Crm\Models\Customer;
+use Syscover\Market\Libraries\PayPalLibrary;
+use Syscover\Market\Models\Order;
 use Syscover\Market\Models\PaymentMethod;
 use Syscover\Market\Models\Product;
 use Syscover\Market\Models\ProductsCategories;
@@ -215,8 +219,8 @@ class MarketFrontendController extends Controller
             'invoice_cp_116'                    => $customer->cp_301,
             'invoice_locality_116'              => $customer->locality_301,
             'invoice_address_116'               => $customer->address_301,
-            'invoice_latitude_116'              => null,
-            'invoice_longitude_116'             => null,
+            'invoice_latitude_116'              => $customer->latitude_301,
+            'invoice_longitude_116'             => $customer->longitude_301,
             'has_invoice_116'                   => $request->has('hasInvoice'),
             'invoiced_116'                      => false,
 
@@ -226,5 +230,67 @@ class MarketFrontendController extends Controller
 
         // create order in database
         $order = Order::create($orderAux);
+
+
+
+        // Redsys Payment
+        if($request->input('paymentMethod') === '1')
+        {
+
+        }
+        // PayPal Payment
+        elseif($request->input('paymentMethod') === '2')
+        {
+            $this->throwPayPalPaymentMethod($order);
+        }
+    }
+
+    private function throwRedsysPaymentMethod(Order $order)
+    {
+        try
+        {
+            $redsys = new Tpv();
+            $redsys->setAmount($order->total_116);
+            $redsys->setOrder(config('market.orderIdPrefix') . $order->id_116);
+            $redsys->setMerchantcode(config('market.redSysEnviroment') == 'live' ? config('market.redSysLiveMerchantCode') : config('market.redSysTestMerchantCode'));
+            $redsys->setCurrency('978');
+            $redsys->setTransactiontype('0');
+            $redsys->setTerminal('1');
+
+            $redsys->setUrlOk(route('redsysPaymentResponseOk'));
+            $redsys->setUrlKo(route('redsysPaymentResponseNook'));
+            $redsys->setVersion('HMAC_SHA256_V1');
+            $redsys->setTradeName(config('market.redSysEnviroment') == 'live'? config('market.redSysLiveMerchantName') : config('market.redSysTestMerchantName'));
+            $redsys->setTitular($order->customer_name_116 . ' ' . $order->customer_surname_116);
+            $redsys->setProductDescription(trans('web.redsysProductDescription'));
+            $redsys->setEnviroment(config('market.redSysEnviroment'));
+
+            // signature SHA256
+            $signature = $redsys->generateMerchantSignature(config('market.redSysEnviroment') == 'live'? config('market.redSysLiveKey') : config('market.redSysTestKey'));
+            $redsys->setMerchantSignature($signature);
+
+            Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_tpv'));
+
+            return response()->json([
+                'status'    => 'success',
+                'redsys'    => $redsys->createForm()
+            ]);
+        }
+        catch(Exception $e){
+            echo $e->getMessage();
+        }
+        return $form;
+
+    }
+
+    private function throwPayPalPaymentMethod(Order $order)
+    {
+        Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_paypal'));
+
+        return response()->json([
+            'status'        => 'success',
+            'order'         => $order,
+            'payPal'        => PayPalLibrary::createForm($order->id_116)
+        ]);
     }
 }

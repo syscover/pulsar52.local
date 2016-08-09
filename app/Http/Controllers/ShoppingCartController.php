@@ -78,6 +78,11 @@ class ShoppingCartController extends Controller
         }
 
         // Know if product is transportable
+        // Options:
+        // 1 - downloadable
+        // 2 - transportable
+        // 3 - transportable_downloadable
+        // 4 - service
         $isTransportable = $product->price_type_id_111 == 2 || $product->price_type_id_111 == 3? true : false;
 
         // when get price from product, internally calculate subtotal and total.
