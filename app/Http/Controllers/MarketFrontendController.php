@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Sermepa\Tpv\Tpv;
-use Syscover\Crm\Models\Customer;
 use Syscover\Market\Libraries\PayPalLibrary;
 use Syscover\Market\Models\Order;
 use Syscover\Market\Models\PaymentMethod;
