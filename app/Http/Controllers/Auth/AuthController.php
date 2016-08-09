@@ -122,7 +122,6 @@ class AuthController extends Controller
             {
                 $cartProducts = Product::builder()
                     ->whereIn('id_111', CartProvider::instance()->getCartItems()->pluck('id'))
-                    ->groupBy('product_class_tax_id_111')
                     ->get();
 
                 $taxRules = TaxRule::builder()
@@ -203,7 +202,6 @@ class AuthController extends Controller
         {
             $cartProducts = Product::builder()
                 ->whereIn('id_111', CartProvider::instance()->getCartItems()->pluck('id'))
-                ->groupBy('product_class_tax_id_111')
                 ->get();
 
             $taxRules = TaxRule::builder()
