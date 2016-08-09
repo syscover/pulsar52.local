@@ -24,8 +24,6 @@ class ShoppingCartController extends Controller
         // get cart items from shoppingCart
         $response['cartItems'] = CartProvider::instance()->getCartItems();
 
-        //dd($response['cartItems']);
-
         return view('www.content.shopping_cart', $response);
     }
 
@@ -126,6 +124,7 @@ class ShoppingCartController extends Controller
             }
 
 
+            // todo, add code al hitórico de uso
             //CouponLibrary::addCouponCode(CartProvider::instance(), $request->input('applyCode'), user_lang(), auth('crm'));
         }
 
