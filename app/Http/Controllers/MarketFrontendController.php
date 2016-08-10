@@ -282,10 +282,34 @@ class MarketFrontendController extends Controller
             'has_shipping_116'                  => $request->input('dataShipping') == 'diff' || $request->input('dataShipping') == 'same'? true : false
         ];
 
-        // create order in database
+        // Create order in database
         $order = Order::create($orderAux);
 
 
+
+        // Create items from shopping cart
+        $items = [];
+        foreach (CartProvider::instance()->cartItems as $item)
+        {
+            $itemAux = [
+                'lang_id_117'               => session('userLang'),
+                'order_id_117'              => $order->id_116,
+                'product_id_117'            => $item->id,
+                'name_117'                  => $item->name,
+                'description_117'           => $item->options->product->description_112,
+                'data_117'                  => json_encode(['product' => $item->options->product]),
+                'price_117'                 => $item->price, // unit price without tax
+                'quantity_117'              => $item->quantity,
+                'subtotal_117'              => $item->subtotal,
+                'discount_percentage_117'   => null,
+                'discount_amount_117'       => 0,
+                'tax_amount_117'            => 0
+            ];
+
+
+            // add item to array
+            $items[] = $itemAux;
+        }
 
         // Redsys Payment
         if($request->input('paymentMethod') === '1')
