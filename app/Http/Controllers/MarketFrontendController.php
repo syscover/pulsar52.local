@@ -36,7 +36,7 @@ class MarketFrontendController extends Controller
             ])
             ->where('lang_id_112', session('userLang'))
             ->where('active_111', true)
-            ->orderBy('sorting', 'asc')
+            ->orderBy('sorting_111', 'asc')
             ->get();
 
 
@@ -48,8 +48,6 @@ class MarketFrontendController extends Controller
             ->orderBy('sorting', 'asc')
             ->get();
         */
-
-
 
 
         // Atention!, if there are only one category by product, you can use slug category for url product
@@ -133,10 +131,18 @@ class MarketFrontendController extends Controller
 
     public function getCheckout01()
     {
-        $response['cartItems']  = CartProvider::instance()->getCartItems();
-        $response['customer']   = auth('crm')->user();
+        if(CartProvider::instance()->hasShipping() === true)
+        {
+            $response['cartItems']  = CartProvider::instance()->getCartItems();
+            $response['customer']   = auth('crm')->user();
 
-        return view('www.content.checkout_01', $response);
+            return view('www.content.checkout_01', $response);
+        }
+        else
+        {
+            return redirect()->route('getCheckout02-' . session('userLang'));
+        }
+
     }
 
     public function postCheckout01(Request $request)

@@ -177,41 +177,44 @@
             </form>
         </div>
         <div class="col-md-6">
-            <h3>Shipping</h3>
-            <div class="form-group">
-                <label>Name</label><br>
-                {{ $shipping['name'] }}
-            </div>
-            <div class="form-group">
-                <label>Surname</label><br>
-                {{ $shipping['surname'] }}
-            </div>
+            <!-- check if cart has shipping -->
+            @if(CartProvider::instance()->hasShipping())
+                <h3>Shipping</h3>
+                <div class="form-group">
+                    <label>Name</label><br>
+                    {{ $shipping['name'] }}
+                </div>
+                <div class="form-group">
+                    <label>Surname</label><br>
+                    {{ $shipping['surname'] }}
+                </div>
 
-            <div class="form-group">
-                <label>Country</label><br>
-                {{ $shipping['country'] }}
-            </div>
-            <div class="form-group">
-                <label>??</label><br>
-                {{ $shipping['territorialArea1'] }}
-            </div>
-            <div class="form-group">
-                <label>??</label><br>
-                {{ $shipping['territorialArea2'] }}
-            </div>
-            <div class="form-group">
-                <label>??</label><br>
-                {{ $shipping['territorialArea3'] }}
-            </div>
+                <div class="form-group">
+                    <label>Country</label><br>
+                    {{ $shipping['country'] }}
+                </div>
+                <div class="form-group">
+                    <label>??</label><br>
+                    {{ $shipping['territorialArea1'] }}
+                </div>
+                <div class="form-group">
+                    <label>??</label><br>
+                    {{ $shipping['territorialArea2'] }}
+                </div>
+                <div class="form-group">
+                    <label>??</label><br>
+                    {{ $shipping['territorialArea3'] }}
+                </div>
 
-            <div class="form-group">
-                <label for="cp">CP</label><br>
-                {{ $shipping['cp'] }}
-            </div>
-            <div class="form-group">
-                <label for="address">Address</label><br>
-                {{ $shipping['address'] }}
-            </div>
+                <div class="form-group">
+                    <label for="cp">CP</label><br>
+                    {{ $shipping['cp'] }}
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label><br>
+                    {{ $shipping['address'] }}
+                </div>
+            @endif
         </div>
     </div>
 @stop

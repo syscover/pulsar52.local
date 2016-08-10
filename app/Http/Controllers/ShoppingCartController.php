@@ -81,7 +81,7 @@ class ShoppingCartController extends Controller
         // 2 - transportable
         // 3 - transportable_downloadable
         // 4 - service
-        $isTransportable = $product->price_type_id_111 == 2 || $product->price_type_id_111 == 3? true : false;
+        $isTransportable = $product->type_id_111 == 2 || $product->type_id_111 == 3? true : false;
 
         // when get price from product, internally calculate subtotal and total.
         // we don't want save this object on shopping cart, if login user with different prices and add same product, will be different because the product will have different prices
