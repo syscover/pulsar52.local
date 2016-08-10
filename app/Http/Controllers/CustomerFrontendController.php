@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Syscover\Crm\Libraries\CustomerLibrary;
 use Syscover\Crm\Models\Group;
 
@@ -36,6 +37,7 @@ class CustomerFrontendController extends Controller
 
     public function postSingIn(Request $request)
     {
+        // automatic validate
         $this->validate($request, [
             'name'      => 'required|max:255',
             'surname'   => 'required|max:255',
@@ -43,6 +45,21 @@ class CustomerFrontendController extends Controller
             'password'  => 'required|between:4,15|same:repassword',
         ]);
 
+        // manual validate
+        $validator = Validator::make($request->all(), [
+            'name'      => 'required|max:255',
+            'surname'   => 'required|max:255',
+            'email'     => 'required|max:255|email|unique:009_301_customer,email_301',
+            'password'  => 'required|between:4,15|same:repassword',
+        ]);
+        if ($validator->fails())
+        {
+            return redirect(route(''))
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // create new customer
         $customer =  CustomerLibrary::createCustomer($request);
 
         // auth the customer created

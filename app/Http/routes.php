@@ -19,9 +19,9 @@ Route::group(['middleware' => ['web', 'pulsar.langLocale', 'pulsar.taxRule']], f
     Route::get('/es/account/login',                                                         ['as'=>'login-es',                  'uses'	=> '\App\Http\Controllers\CustomerFrontendController@login']);
     Route::get('/es/account/logout',                                                        ['as'=>'logout-es',                 'uses'	=> '\App\Http\Controllers\Auth\AuthController@logout']);
 
-    Route::get('/es/account/sing-in',                                                       ['as'=>'get-singIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@getSingIn']);
-    Route::post('/es/account/sing-in',                                                      ['as'=>'post-singIn-es',            'uses'	=> '\App\Http\Controllers\CustomerFrontendController@postSingIn']);
-    Route::put('/es/account/sing-in',                                                       ['as'=>'put-singIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@putSingIn']);
+    Route::get('/es/account/sing-in',                                                       ['as'=>'getSingIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@getSingIn']);
+    Route::post('/es/account/sing-in',                                                      ['as'=>'postSingIn-es',            'uses'	=> '\App\Http\Controllers\CustomerFrontendController@postSingIn']);
+    Route::put('/es/account/sing-in',                                                       ['as'=>'putSingIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@putSingIn']);
 });
 
 Route::group(['middleware' => ['web', 'pulsar.langLocale', 'auth:crm']], function() {

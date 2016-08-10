@@ -46,7 +46,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <a href="{{ route('get-singIn-' . user_lang()) }}" class="btn btn-primary btn-lg">Sign in</a>
+            <a href="{{ route('getSingIn-' . user_lang()) }}" class="btn btn-primary btn-lg">Sign in</a>
         </div>
     </div>
 @stop

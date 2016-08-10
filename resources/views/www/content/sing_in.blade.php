@@ -7,7 +7,7 @@
 
 @section('content')
     <h1>Sing In</h1>
-    <form action="{{ route('post-singIn-' . user_lang()) }}" method="post">
+    <form action="{{ route('postSingIn-' . user_lang()) }}" method="post">
         {{ csrf_field() }}
         <input type="hidden" name="active" value="1"> <!-- set customer created like active -->
         <div class="form-group">
