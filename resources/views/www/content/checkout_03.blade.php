@@ -4,32 +4,10 @@
 
 @section('head')
     @parent
-    <script src="{{ asset('packages/syscover/pulsar/vendor/getaddress/js/jquery.getaddress.js') }}"></script>
-
-    <script>
-        $(document).ready(function() {
-            $.getAddress({
-                id:                         '01',
-                type:                       'laravel',
-                appName:                    'pulsar',
-                token:                      '{{ csrf_token() }}',
-                lang:                       '{{ config('app.locale') }}',
-                highlightCountrys:          ['ES','US'],
-
-                useSeparatorHighlight:      true,
-                textSeparatorHighlight:     '------------------',
-
-                countryValue:               '{{ old('country', isset($customer->country_id_301)? $customer->country_id_301 : null) }}',
-                territorialArea1Value:      '{{ old('territorialArea1', isset($customer->territorial_area_1_id_301)? $customer->territorial_area_1_id_301 : null) }}',
-                territorialArea2Value:      '{{ old('territorialArea2', isset($customer->territorial_area_2_id_301)? $customer->territorial_area_2_id_301 : null) }}',
-                territorialArea3Value:      '{{ old('territorialArea3', isset($customer->territorial_area_3_id_301)? $customer->territorial_area_3_id_301 : null) }}'
-            });
-        })
-    </script>
 @stop
 
 @section('content')
-    <h1>Checkout (Step 2 - billing)</h1>
+    <h1>Checkout (Step 3 - payment)</h1>
 
     <!-- heads -->
     <div class="row">
@@ -179,6 +157,18 @@
                     <h4>{{ CartProvider::instance()->getTotal() }} €</h4>
                 </div>
             </div>
+            <h3>Payment</h3>
+            <form action="{{ route('postCheckout02-' . user_lang()) }}" method="post">
+                @foreach($paymentMethods as $paymentMethod)
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="paymentMethod" value="{{ $paymentMethod->id_115 }}">
+                            {{ $paymentMethod->name_115 }}
+                        </label>
+                    </div>
+                @endforeach
+                <button type="submit" class="btn btn-primary">Pay</button>
+            </form>
         </div>
         <div class="col-md-6">
             <!-- check if cart has shipping -->
@@ -220,66 +210,51 @@
                 </div>
             @endif
 
-            <h3>Billing</h3>
-            <form action="{{ route('postCheckout02-' . user_lang()) }}" method="post">
-                {{ csrf_field() }}
+            @if(CartProvider::instance()->hasShipping())
+                <h3>Billing </h3>
                 <div class="form-group">
-                    <label for="company">Compay</label>
-                    <input type="text" class="form-control" id="company" name="company" placeholder="Company" value="{{ empty($customer->company_301)? null : $customer->company_301 }}">
+                    <label>Name</label><br>
+                    {{ $billing['company'] }}
                 </div>
                 <div class="form-group">
-                    <label for="tin">TIN</label>
-                    <input type="text" class="form-control" id="tin" name="tin" placeholder="TIN" value="{{ empty($customer->tin_301)? null : $customer->tin_301 }}">
+                    <label>Name</label><br>
+                    {{ $billing['tin'] }}
                 </div>
                 <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{ empty($customer->name_301)? null : $customer->name_301 }}" required>
+                    <label>Name</label><br>
+                    {{ $billing['name'] }}
                 </div>
                 <div class="form-group">
-                    <label for="surname">Surname</label>
-                    <input type="text" class="form-control" id="surname" name="surname" placeholder="Surname" value="{{ empty($customer->surname_301)? null : $customer->surname_301 }}" required>
+                    <label>Surname</label><br>
+                    {{ $billing['surname'] }}
                 </div>
 
                 <div class="form-group">
-                    <label for="country">Country</label>
-                    <select class="form-control" id="country" name="country" required>
-                    </select>
+                    <label>Country</label><br>
+                    {{ $billing['country'] }}
                 </div>
-                <div class="form-group" id="territorialArea1Wrapper">
-                    <label for="territorialArea1" id="territorialArea1Label"></label>
-                    <select class="form-control" id="territorialArea1" name="territorialArea1" required>
-                    </select>
+                <div class="form-group">
+                    <label>??</label><br>
+                    {{ $billing['territorialArea1'] }}
                 </div>
-                <div class="form-group" id="territorialArea2Wrapper">
-                    <label for="territorialArea2" id="territorialArea2Label"></label>
-                    <select class="form-control" id="territorialArea2" name="territorialArea2" required>
-                    </select>
+                <div class="form-group">
+                    <label>??</label><br>
+                    {{ $billing['territorialArea2'] }}
                 </div>
-                <div class="form-group" id="territorialArea3Wrapper">
-                    <label for="territorialArea3" id="territorialArea3Label"></label>
-                    <select class="form-control" id="territorialArea3" name="territorialArea3" required>
-                    </select>
+                <div class="form-group">
+                    <label>??</label><br>
+                    {{ $billing['territorialArea3'] }}
                 </div>
 
                 <div class="form-group">
-                    <label for="cp">CP</label>
-                    <input type="text" class="form-control" id="cp" name="cp" placeholder="CP" value="{{ empty($customer->cp_301)? null : $customer->cp_301 }}" required>
+                    <label for="cp">CP</label><br>
+                    {{ $billing['cp'] }}
                 </div>
                 <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="{{ empty($customer->address_301)? null : $customer->address_301 }}" required>
+                    <label for="address">Address</label><br>
+                    {{ $billing['address'] }}
                 </div>
-                @if (count($errors) > 0)
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                <button type="submit" class="btn btn-primary">Nex step</button>
-            </form>
+            @endif
         </div>
     </div>
 @stop

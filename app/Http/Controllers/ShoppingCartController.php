@@ -6,6 +6,7 @@ use Syscover\Market\Models\CartPriceRule;
 use Syscover\Market\Models\Product;
 use Syscover\Market\Models\TaxRule;
 use Syscover\Pulsar\Models\Attachment;
+use Syscover\ShoppingCart\Exceptions\ShoppingCartNotCombinablePriceRuleException;
 use Syscover\ShoppingCart\PriceRule;
 use Syscover\ShoppingCart\TaxRule as TaxRuleShoppingCart;
 use Syscover\ShoppingCart\Facades\CartProvider;
@@ -87,10 +88,17 @@ class ShoppingCartController extends Controller
         // we don't want save this object on shopping cart, if login user with different prices and add same product, will be different because the product will have different prices
         $optionsProduct = $product;
 
-        // intance row to add product
-        CartProvider::instance()->add(new Item($product->id_111, $product->name_112, 1, $product->price_111, $product->weight_111, $isTransportable, $taxRulesShoppingCart,[
-            'product' => $optionsProduct
-        ]));
+        try
+        {
+            // intance row to add product
+            CartProvider::instance()->add(new Item($product->id_111, $product->name_112, 1, $product->price_111, $product->weight_111, $isTransportable, $taxRulesShoppingCart,[
+                'product' => $optionsProduct
+            ]));
+        }
+        catch (\Exception $e)
+        {
+            dd($e->getMessage());
+        }
         
         return redirect()->route('shoppingCart-' . session('userLang'));
     }
@@ -104,19 +112,30 @@ class ShoppingCartController extends Controller
 
             if($cartPriceRule != null)
             {
-                CartProvider::instance()->addCartPriceRule(
-                    new PriceRule(
-                        $cartPriceRule->name_text_value,
-                        $cartPriceRule->description_text_value,
-                        $cartPriceRule->discount_type_id_120,
-                        $cartPriceRule->free_shipping_120,
-                        $cartPriceRule->discount_fixed_amount_120,
-                        $cartPriceRule->discount_percentage_120,
-                        $cartPriceRule->maximum_discount_amount_120,
-                        $cartPriceRule->apply_shipping_amount_120,
-                        $cartPriceRule->combinable_120
-                    )
-                );
+                try
+                {
+                    CartProvider::instance()->addCartPriceRule(
+                        new PriceRule(
+                            $cartPriceRule->name_text_value,
+                            $cartPriceRule->description_text_value,
+                            $cartPriceRule->discount_type_id_120,
+                            $cartPriceRule->free_shipping_120,
+                            $cartPriceRule->discount_fixed_amount_120,
+                            $cartPriceRule->discount_percentage_120,
+                            $cartPriceRule->maximum_discount_amount_120,
+                            $cartPriceRule->apply_shipping_amount_120,
+                            $cartPriceRule->combinable_120
+                        )
+                    );
+                }
+                catch (ShoppingCartNotCombinablePriceRuleException $e)
+                {
+                    dd($e->getMessage());
+                }
+                catch (\Exception $e)
+                {
+                    dd($e->getMessage());
+                }
             }
             else
             {

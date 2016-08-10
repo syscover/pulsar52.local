@@ -129,12 +129,23 @@ class MarketFrontendController extends Controller
         return view('www.content.product', $response);
     }
 
+    /**
+     * To set shipping data
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function getCheckout01()
     {
+        // check if cart has shipping
         if(CartProvider::instance()->hasShipping() === true)
         {
             $response['cartItems']  = CartProvider::instance()->getCartItems();
             $response['customer']   = auth('crm')->user();
+
+            // todo, this amount has to be calculate with shipping rules
+            $shippungPricePerUnit = 5.00;
+
+            CartProvider::instance()->shippingAmount = CartProvider::instance()->transportableWeight * $shippungPricePerUnit;
 
             return view('www.content.checkout_01', $response);
         }
@@ -150,7 +161,7 @@ class MarketFrontendController extends Controller
         $response['cartItems']  = CartProvider::instance()->getCartItems();
         $response['customer']   = auth('crm')->user();
 
-        // set shipping on shopping cart
+        // store shipping data on shopping cart
         CartProvider::instance()->setShipping([
             'name'              => $request->input('name'),
             'surname'           => $request->input('surname'),
@@ -165,11 +176,49 @@ class MarketFrontendController extends Controller
         return redirect()->route('getCheckout02-' . session('userLang'));
     }
 
+    /**
+     * To set billing data
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function getCheckout02()
     {
         $response['cartItems']      = CartProvider::instance()->getCartItems();
         $response['customer']       = auth('crm')->user();
         $response['shipping']       = CartProvider::instance()->getShipping();
+
+        return view('www.content.checkout_02', $response);
+    }
+
+    public function postCheckout02(Request $request)
+    {
+        CartProvider::instance()->setBilling([
+            'company'           => $request->input('company'),
+            'tin'               => $request->input('tin'),
+            'name'              => $request->input('name'),
+            'surname'           => $request->input('surname'),
+            'country'           => $request->input('country'),
+            'territorialArea1'  => $request->input('territorialArea1'),
+            'territorialArea2'  => $request->input('territorialArea2'),
+            'territorialArea3'  => $request->input('territorialArea3'),
+            'cp'                => $request->input('cp'),
+            'address'           => $request->input('address'),
+        ]);
+
+        return redirect()->route('getCheckout03-' . session('userLang'));
+    }
+
+    /**
+     * To set payment method
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getCheckout03()
+    {
+        $response['cartItems']      = CartProvider::instance()->getCartItems();
+        $response['customer']       = auth('crm')->user();
+        $response['shipping']       = CartProvider::instance()->getShipping();
+        $response['billing']        = CartProvider::instance()->getBilling();
 
         $response['paymentMethods'] = PaymentMethod::builder()
             ->where('lang_id_115', user_lang())
@@ -177,10 +226,10 @@ class MarketFrontendController extends Controller
             ->orderBy('sorting_115', 'asc')
             ->get();
 
-        return view('www.content.checkout_02', $response);
+        return view('www.content.checkout_03', $response);
     }
 
-    public function postCheckout02(Request $request)
+    public function postCheckout03(Request $request)
     {
         // create data order
         $orderDate  = date('U');

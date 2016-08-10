@@ -161,22 +161,14 @@
                     <h4>{{ CartProvider::instance()->getTaxAmount() }} €</h4>
                 </div>
             </div>
-            {{--<div class="row">--}}
-                {{--<div class="col-md-7">--}}
-                    {{--<h4>Coste de envío:</h4>--}}
-                {{--</div>--}}
-                {{--<div class="col-md-5">--}}
-                    {{--<h3>{{ CartProvider::instance()->getShippingAmount() }} €</h3>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-            {{--<div class="row">--}}
-                {{--<div class="col-md-7">--}}
-                    {{--<h4>Coupon name</h4>--}}
-                {{--</div>--}}
-                {{--<div class="col-md-5">--}}
-                    {{--<h3>-9999€</h3>--}}
-                {{--</div>--}}
-            {{--</div>--}}
+            <div class="row">
+                <div class="col-md-7">
+                    <h4>Coste de envío:</h4>
+                </div>
+                <div class="col-md-5">
+                    <h4>{{ CartProvider::instance()->getShippingAmount() }} €</h4>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-7">
                     <h4>Total:</h4>
@@ -187,16 +179,16 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h4>Shipping</h4>
+            <h3>Shipping: {{ CartProvider::instance()->getShippingAmount() }} €</h3>
             <form action="{{ route('postCheckout01-' . user_lang()) }}" method="post">
                 {{ csrf_field() }}
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{ empty($customer->name_301)?: $customer->name_301 }}" required>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{ empty($customer->name_301)? null : $customer->name_301 }}" required>
                 </div>
                 <div class="form-group">
                     <label for="surname">Surname</label>
-                    <input type="text" class="form-control" id="surname" name="surname" placeholder="Surname" value="{{ empty($customer->surname_301)?: $customer->surname_301 }}" required>
+                    <input type="text" class="form-control" id="surname" name="surname" placeholder="Surname" value="{{ empty($customer->surname_301)? null : $customer->surname_301 }}" required>
                 </div>
 
                 <div class="form-group">
@@ -222,11 +214,11 @@
 
                 <div class="form-group">
                     <label for="cp">CP</label>
-                    <input type="text" class="form-control" id="cp" name="cp" placeholder="CP" value="{{ empty($customer->cp_301)?: $customer->cp_301 }}" required>
+                    <input type="text" class="form-control" id="cp" name="cp" placeholder="CP" value="{{ empty($customer->cp_301)? null : $customer->cp_301 }}" required>
                 </div>
                 <div class="form-group">
                     <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="{{ empty($customer->address_301)?: $customer->address_301 }}" required>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="{{ empty($customer->address_301)? null : $customer->address_301 }}" required>
                 </div>
                 @if (count($errors) > 0)
                     <div class="alert alert-danger">
