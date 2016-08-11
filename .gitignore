@@ -36,7 +36,7 @@
 /config/spas.php
 /config/wineries.php
 /config/booking.php
-/config/langlocale.php
+/config/navTools.php
 /config/shoppingCart.php
 /config/market.php
 /config/excel.php

@@ -164,7 +164,7 @@ return [
         /*
          * Pulsar Application Service Providers...
          */
-        App\Providers\LanglocaleServiceProvider::class,
+        App\Providers\NavToolsServiceProvider::class,
         App\Providers\PulsarServiceProvider::class,
         App\Providers\OctopusServiceProvider::class,
         App\Providers\HotelsServiceProvider::class,
