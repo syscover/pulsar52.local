@@ -153,7 +153,6 @@ class MarketFrontendController extends Controller
         {
             return redirect()->route('getCheckout02-' . session('userLang'));
         }
-
     }
 
     public function postCheckout01(Request $request)
@@ -171,6 +170,7 @@ class MarketFrontendController extends Controller
             'territorialArea3'  => $request->input('territorialArea3'),
             'cp'                => $request->input('cp'),
             'address'           => $request->input('address'),
+            'comments'          => $request->input('comments'),
         ]);
 
         return redirect()->route('getCheckout02-' . session('userLang'));
