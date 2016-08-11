@@ -34,11 +34,10 @@ class MarketFrontendController extends Controller
                 config('www.productsListCategories.escapadas'),
                 config('www.productsListCategories.experiencias')
             ])
-            ->where('lang_id_112', session('userLang'))
+            ->where('lang_id_112', user_lang())
             ->where('active_111', true)
             ->orderBy('sorting_111', 'asc')
             ->get();
-
 
         // Option 2 - get products
         /*

@@ -40,7 +40,7 @@ class ShoppingCartController extends Controller
         $parameters = $request->route()->parameters();
 
         $product = Product::builder()
-            ->where('lang_id_112', session('userLang'))
+            ->where('lang_id_112', user_lang())
             ->where('slug_112', $parameters['slug'])
             ->where('active_111', true)
             ->first();
@@ -100,7 +100,7 @@ class ShoppingCartController extends Controller
             dd($e->getMessage());
         }
         
-        return redirect()->route('shoppingCart-' . session('userLang'));
+        return redirect()->route('shoppingCart-' . user_lang());
     }
 
     public function updateShoppingCart(Request $request)
@@ -157,7 +157,7 @@ class ShoppingCartController extends Controller
             }
         }
 
-        return redirect()->route('shoppingCart-' . session('userLang'));
+        return redirect()->route('shoppingCart-' . user_lang());
     }
 
     public function deleteShoppingCart(Request $request)
@@ -167,6 +167,6 @@ class ShoppingCartController extends Controller
 
         CartProvider::instance()->remove($parameters['rowId']);
 
-        return redirect()->route('shoppingCart-' . session('userLang'));
+        return redirect()->route('shoppingCart-' . user_lang());
     }
 }
