@@ -1,7 +1,7 @@
 <?php
 
 // Atención usar middlelware langlocale.pulsar para abarcar todas las rutas, para obtener el userLang de la session
-Route::group(['middleware' => ['web', 'pulsar.langLocale', 'pulsar.taxRule']], function () {
+Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], function () {
     
     Route::get('/',                                                                         ['as'=>'home',                      'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
     Route::get('/es',                                                                       ['as'=>'home-es',                   'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
@@ -27,7 +27,7 @@ Route::group(['middleware' => ['web', 'pulsar.langLocale', 'pulsar.taxRule']], f
     Route::get('/es/factura/directa/clients',                                               ['as'=>'facturaDirectaClients-es',  'uses'	=> '\App\Http\Controllers\FacturaDirectaController@getClients']);
 });
 
-Route::group(['middleware' => ['web', 'pulsar.langLocale', 'auth:crm']], function() {
+Route::group(['middleware' => ['web', 'pulsar.navTools', 'auth:crm']], function() {
     Route::get('/es/account',                                                               ['as'=>'account-es',                'uses'	=> '\App\Http\Controllers\CustomerFrontendController@account']);
 
     // Checkout routes
@@ -39,7 +39,7 @@ Route::group(['middleware' => ['web', 'pulsar.langLocale', 'auth:crm']], functio
     Route::post('/es/checkout/payment',                                                     ['as'=>'postCheckout03-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout03']);
 });
 
-Route::group(['middleware' => ['web', 'pulsar.langLocale']], function () {
+Route::group(['middleware' => ['web', 'pulsar.navTools']], function () {
     Route::post('/account/customer/set/auth',                                               ['as' => 'setAuth',                 'uses' => '\App\Http\Controllers\Auth\AuthController@authenticate']);
 
 });
