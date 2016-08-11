@@ -29,7 +29,7 @@
 @stop
 
 @section('content')
-    <h1>Checkout (Step 2 - billing)</h1>
+    <h1>Checkout (Step 2 - invoice)</h1>
 
     <!-- heads -->
     <div class="row">
@@ -220,7 +220,7 @@
                 </div>
             @endif
 
-            <h3>Billing</h3>
+            <h3>Invoice</h3>
             <form action="{{ route('postCheckout02-' . user_lang()) }}" method="post">
                 {{ csrf_field() }}
                 <div class="form-group">

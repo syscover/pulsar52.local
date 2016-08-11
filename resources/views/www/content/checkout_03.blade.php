@@ -210,49 +210,49 @@
                 </div>
             @endif
 
-            @if(CartProvider::instance()->hasShipping())
-                <h3>Billing </h3>
+            @if(CartProvider::instance()->hasInvoice())
+                <h3>Invoice </h3>
                 <div class="form-group">
                     <label>Name</label><br>
-                    {{ $billing['company'] }}
+                    {{ $invoice['company'] }}
                 </div>
                 <div class="form-group">
                     <label>Name</label><br>
-                    {{ $billing['tin'] }}
+                    {{ $invoice['tin'] }}
                 </div>
                 <div class="form-group">
                     <label>Name</label><br>
-                    {{ $billing['name'] }}
+                    {{ $invoice['name'] }}
                 </div>
                 <div class="form-group">
                     <label>Surname</label><br>
-                    {{ $billing['surname'] }}
+                    {{ $invoice['surname'] }}
                 </div>
 
                 <div class="form-group">
                     <label>Country</label><br>
-                    {{ $billing['country'] }}
+                    {{ $invoice['country'] }}
                 </div>
                 <div class="form-group">
                     <label>??</label><br>
-                    {{ $billing['territorialArea1'] }}
+                    {{ $invoice['territorialArea1'] }}
                 </div>
                 <div class="form-group">
                     <label>??</label><br>
-                    {{ $billing['territorialArea2'] }}
+                    {{ $invoice['territorialArea2'] }}
                 </div>
                 <div class="form-group">
                     <label>??</label><br>
-                    {{ $billing['territorialArea3'] }}
+                    {{ $invoice['territorialArea3'] }}
                 </div>
 
                 <div class="form-group">
                     <label for="cp">CP</label><br>
-                    {{ $billing['cp'] }}
+                    {{ $invoice['cp'] }}
                 </div>
                 <div class="form-group">
                     <label for="address">Address</label><br>
-                    {{ $billing['address'] }}
+                    {{ $invoice['address'] }}
                 </div>
             @endif
         </div>

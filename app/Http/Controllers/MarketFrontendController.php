@@ -192,7 +192,7 @@ class MarketFrontendController extends Controller
 
     public function postCheckout02(Request $request)
     {
-        CartProvider::instance()->setBilling([
+        CartProvider::instance()->setInvoice([
             'company'           => $request->input('company'),
             'tin'               => $request->input('tin'),
             'name'              => $request->input('name'),
@@ -218,7 +218,7 @@ class MarketFrontendController extends Controller
         $response['cartItems']      = CartProvider::instance()->getCartItems();
         $response['customer']       = auth('crm')->user();
         $response['shipping']       = CartProvider::instance()->getShipping();
-        $response['billing']        = CartProvider::instance()->getBilling();
+        $response['invoice']        = CartProvider::instance()->getInvoice();
 
         $response['paymentMethods'] = PaymentMethod::builder()
             ->where('lang_id_115', user_lang())
@@ -279,8 +279,33 @@ class MarketFrontendController extends Controller
             'invoiced_116'                      => false,
 
             // comprobamos si hay envío que realizar
-            'has_shipping_116'                  => $request->input('dataShipping') == 'diff' || $request->input('dataShipping') == 'same'? true : false
+            'has_shipping_116'                  => CartProvider::instance()->hasShipping()
         ];
+
+        // if cart has shipping, set shipping in order
+        if(CartProvider::instance()->hasShipping())
+        {
+            $shipping = CartProvider::instance()->getShipping();
+
+            $orderAux = array_merge($orderAux, [
+                'shipping_company_116'                  => isset($shipping['company'])? $shipping['company'] : null,
+                'shipping_name_116'                     => isset($shipping['name'])? ucfirst($shipping['name']) : null,
+                'shipping_surname_116'                  => isset($shipping['surname'])? ucfirst($shipping['surname']) : null,
+                'shipping_email_116'                    => isset($shipping['email'])? strtolower($shipping['email']) : null,
+                'shipping_phone_116'                    => isset($shipping['phone'])? $shipping['phone'] : null,
+                'shipping_mobile_116'                   => isset($shipping['mobile'])? $shipping['mobile'] : null,
+                'shipping_country_id_116'               => isset($shipping['country'])? $shipping['country'] : null,
+                'shipping_territorial_area_1_id_116'    => isset($shipping['territorialArea1'])? $shipping['territorialArea1'] : null,
+                'shipping_territorial_area_2_id_116'    => isset($shipping['territorialArea2'])? $shipping['territorialArea2'] : null,
+                'shipping_territorial_area_3_id_116'    => isset($shipping['territorialArea3'])? $shipping['territorialArea3'] : null,
+                'shipping_cp_116'                       => isset($shipping['cp'])? $shipping['cp'] : null,
+                'shipping_locality_116'                 => isset($shipping['locality'])? ucfirst($shipping['locality']) : null,
+                'shipping_address_116'                  => isset($shipping['address'])? $shipping['address'] : null,
+                'shipping_comments_116'                 => isset($shipping['comments'])? $shipping['comments'] : null,
+                'shipping_latitude_116'                 => isset($shipping['latitude'])? $shipping['latitude'] : null,
+                'shipping_longitude_116'                => isset($shipping['longitude'])? $shipping['longitude'] : null,
+            ]);
+        }
 
         // Create order in database
         $order = Order::create($orderAux);
