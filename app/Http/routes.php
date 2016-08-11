@@ -19,13 +19,18 @@ Route::group(['middleware' => ['web', 'pulsar.langLocale', 'pulsar.taxRule']], f
     Route::get('/es/account/login',                                                         ['as'=>'login-es',                  'uses'	=> '\App\Http\Controllers\CustomerFrontendController@login']);
     Route::get('/es/account/logout',                                                        ['as'=>'logout-es',                 'uses'	=> '\App\Http\Controllers\Auth\AuthController@logout']);
 
-    Route::get('/es/account/sing-in',                                                       ['as'=>'getSingIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@getSingIn']);
-    Route::post('/es/account/sing-in',                                                      ['as'=>'postSingIn-es',            'uses'	=> '\App\Http\Controllers\CustomerFrontendController@postSingIn']);
-    Route::put('/es/account/sing-in',                                                       ['as'=>'putSingIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@putSingIn']);
+    Route::get('/es/account/sing-in',                                                       ['as'=>'getSingIn-es',              'uses'	=> '\App\Http\Controllers\CustomerFrontendController@getSingIn']);
+    Route::post('/es/account/sing-in',                                                      ['as'=>'postSingIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@postSingIn']);
+    Route::put('/es/account/sing-in',                                                       ['as'=>'putSingIn-es',              'uses'	=> '\App\Http\Controllers\CustomerFrontendController@putSingIn']);
+
+    // Factura Directa routes
+    Route::get('/es/factura/directa/clients',                                               ['as'=>'facturaDirectaClients-es',  'uses'	=> '\App\Http\Controllers\FacturaDirectaController@getClients']);
 });
 
 Route::group(['middleware' => ['web', 'pulsar.langLocale', 'auth:crm']], function() {
     Route::get('/es/account',                                                               ['as'=>'account-es',                'uses'	=> '\App\Http\Controllers\CustomerFrontendController@account']);
+
+    // Checkout routes
     Route::get('/es/checkout/shipping',                                                     ['as'=>'getCheckout01-es',          'uses'	=> '\App\Http\Controllers\MarketFrontendController@getCheckout01']);
     Route::post('/es/checkout/shipping',                                                    ['as'=>'postCheckout01-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout01']);
     Route::get('/es/checkout/invoice',                                                      ['as'=>'getCheckout02-es',          'uses'	=> '\App\Http\Controllers\MarketFrontendController@getCheckout02']);

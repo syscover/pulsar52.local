@@ -26,7 +26,7 @@
 # -- Pulsar -----------------------------------------
 /config/api.php
 /config/projects.php
-/config/facturadirecta.php
+/config/facturaDirecta.php
 /config/cms.php
 /config/crm.php
 /config/comunik.php
@@ -37,10 +37,10 @@
 /config/wineries.php
 /config/booking.php
 /config/langlocale.php
-/config/shoppingcart.php
+/config/shoppingCart.php
 /config/market.php
 /config/excel.php
-/config/google_api.php
+/config/googleApi.php
 /config/pulsar.php
 
 /tests/shopping_cart_tests_helpers/

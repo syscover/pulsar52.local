@@ -71,6 +71,9 @@
                         </ul>
                     </li>
                     <li>
+                        <a href="{{ route('facturaDirectaClients-' . user_lang()) }}">FD</a>
+                    </li>
+                    <li>
                         <a href="#">Contact</a>
                     </li>
                 </ul>

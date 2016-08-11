@@ -179,7 +179,7 @@ return [
         App\Providers\ShoppingCartServiceProvider::class,
         App\Providers\ProjectsServiceProvider::class,
         App\Providers\FetchServiceProvider::class,
-        App\Providers\FacturadirectaServiceProvider::class,
+        App\Providers\FacturaDirectaServiceProvider::class,
     ],
 
     /*
