@@ -9,7 +9,7 @@
     <h1>Login</h1>
     <div class="row">
         <div class="col-md-12">
-            <form method="post" action="{{ route('postLogin-' . user_lang()) }}">
+            <form method="post" action="{{ route('postLogin') }}">
                 {{ csrf_field() }}
                 <!--
                     Use input hidden with name responseType to define response type, values:
