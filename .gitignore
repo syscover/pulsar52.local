@@ -44,7 +44,7 @@
 /config/pulsar.php
 
 /tests/shopping_cart_tests_helpers/
-/tests/CartProviderTest.php
+/tests/ShoppingCartProviderTest.php
 /tests/PulsarTest.php
 
 /database/factories/PulsarModelFactory.php
