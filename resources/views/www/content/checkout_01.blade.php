@@ -63,7 +63,7 @@
     </div>
     <!-- /heads -->
 
-    <form id="shoppingCartForm" action="{{ route('updateShoppingCart-' . user_lang()) }}" method="post">
+
         @foreach($cartItems as $item)
             <div class="row">
                 <div class="col-md-1">
@@ -100,10 +100,9 @@
                 </div>
             </div>
         @endforeach
-        {{ csrf_field() }}
-        <input type="hidden" name="_method" value="PUT">
-        <input type="hidden" name="applyCouponCode">
-    </form>
+
+
+
     <br><br><br><br>
     <div class="row">
         <div class="col-md-6">

@@ -64,7 +64,7 @@
     </div>
     <!-- /heads -->
 
-    <form id="shoppingCartForm" action="{{ route('updateShoppingCart-' . user_lang()) }}" method="post">
+    <form id="shoppingCartForm" action="{{ route('putShoppingCart-' . user_lang()) }}" method="post">
         @foreach($cartItems as $item)
             <div class="row">
                 <div class="col-md-1">

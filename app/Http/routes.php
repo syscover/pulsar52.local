@@ -15,7 +15,7 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], fun
     Route::get('/es/carro/de/compra',                                                       ['as'=>'getShoppingCart-es',        'uses'	=> '\App\Http\Controllers\ShoppingCartController@getShoppingCart']);
     Route::match(['get', 'post'], '/es/carro/de/compra/anadir/producto/{slug}',             ['as'=>'postShoppingCart-es',       'uses'	=> '\App\Http\Controllers\ShoppingCartController@postShoppingCart']);
     Route::match(['get', 'post'], '/es/carro/de/compra/borrar/producto/{rowId}',            ['as'=>'deleteShoppingCart-es',     'uses'	=> '\App\Http\Controllers\ShoppingCartController@deleteShoppingCart']);
-    Route::put('/es/carro/de/comprar/actualizar/producto',                                  ['as'=>'updateShoppingCart-es',     'uses'	=> '\App\Http\Controllers\ShoppingCartController@updateShoppingCart']);
+    Route::put('/es/carro/de/comprar/actualizar/producto',                                  ['as'=>'putShoppingCart-es',        'uses'	=> '\App\Http\Controllers\ShoppingCartController@putShoppingCart']);
 
     Route::get('/es/account/login',                                                         ['as'=>'getLogin-es',               'uses'	=> '\App\Http\Controllers\CustomerFrontendController@getLogin']);
     Route::match(['get', 'post'], '/es/account/logout',                                     ['as'=>'logout-es',                 'uses'	=> '\App\Http\Controllers\CustomerFrontendController@logout']);

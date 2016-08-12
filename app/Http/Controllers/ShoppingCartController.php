@@ -103,7 +103,7 @@ class ShoppingCartController extends Controller
         return redirect()->route('getShoppingCart-' . user_lang());
     }
 
-    public function updateShoppingCart(Request $request)
+    public function putShoppingCart(Request $request)
     {
         // check idf exist coupon code
         if($request->has('applyCouponCode'))
