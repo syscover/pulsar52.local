@@ -5,6 +5,7 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], fun
     
     Route::get('/',                                                                         ['as'=>'home',                      'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
     Route::get('/es',                                                                       ['as'=>'home-es',                   'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
+    Route::get('/en',                                                                       ['as'=>'home-en',                   'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
     
     // Market routes
     Route::get('/es/product/list',                                                          ['as'=>'productList-es',            'uses'	=> '\App\Http\Controllers\MarketFrontendController@getProductsList']);
@@ -23,6 +24,7 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], fun
     Route::post('/es/account/sing-in',                                                      ['as'=>'postSingIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@postSingIn']);
     Route::put('/es/account/sing-in',                                                       ['as'=>'putSingIn-es',              'uses'	=> '\App\Http\Controllers\CustomerFrontendController@putSingIn']);
 
+
     // Factura Directa routes
     Route::get('/es/factura/directa/clients',                                               ['as'=>'facturaDirectaClients-es',  'uses'	=> '\App\Http\Controllers\FacturaDirectaController@getClients']);
 });
@@ -30,6 +32,7 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], fun
 Route::group(['middleware' => ['web', 'pulsar.navTools', 'auth:crm']], function() {
     Route::get('/es/account',                                                               ['as'=>'account-es',                'uses'	=> '\App\Http\Controllers\CustomerFrontendController@account']);
 
+    // EN
     // Checkout routes
     Route::get('/es/checkout/shipping',                                                     ['as'=>'getCheckout01-es',          'uses'	=> '\App\Http\Controllers\MarketFrontendController@getCheckout01']);
     Route::post('/es/checkout/shipping',                                                    ['as'=>'postCheckout01-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout01']);
@@ -37,10 +40,16 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'auth:crm']], function(
     Route::post('/es/checkout/invoice',                                                     ['as'=>'postCheckout02-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout02']);
     Route::get('/es/checkout/payment',                                                      ['as'=>'getCheckout03-es',          'uses'	=> '\App\Http\Controllers\MarketFrontendController@getCheckout03']);
     Route::post('/es/checkout/payment',                                                     ['as'=>'postCheckout03-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout03']);
+
+    // ES
 });
 
 Route::group(['middleware' => ['web', 'pulsar.navTools']], function () {
-    Route::post('/es/account/login/',                                                        ['as' => 'postLogin-es',           'uses' => '\App\Http\Controllers\CustomerFrontendController@postLogin']);
+    //EN
+    Route::post('/en/account/login/',                                                       ['as' => 'postLogin-en',           'uses' => '\App\Http\Controllers\CustomerFrontendController@postLogin']);
+
+    //ES
+    Route::post('/es/cuenta/login/',                                                        ['as' => 'postLogin-es',           'uses' => '\App\Http\Controllers\CustomerFrontendController@postLogin']);
 });
 
 
