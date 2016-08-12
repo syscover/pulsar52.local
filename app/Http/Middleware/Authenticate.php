@@ -25,7 +25,7 @@ class Authenticate
             }
             else
             {
-                return redirect()->guest(route('login-' . user_lang()));
+                return redirect()->guest(route('getLogin-' . user_lang()));
             }
         }
 

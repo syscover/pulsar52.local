@@ -66,7 +66,7 @@
                                 <li><a href="{{ route('logout-' . user_lang()) }}">Logout</a></li>
                             @endif
                             @if(auth('crm')->guest())
-                                <li><a href="{{ route('login-' . user_lang()) }}">Login</a></li>
+                                <li><a href="{{ route('getLogin-' . user_lang()) }}">Login</a></li>
                             @endif
                         </ul>
                     </li>

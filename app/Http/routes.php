@@ -1,6 +1,6 @@
 <?php
 
-// Atención usar middlelware langlocale.pulsar para abarcar todas las rutas, para obtener el userLang de la session
+// Atención usar middlelware pulsar.navTools para abarcar todas las rutas, para obtener el userLang de la session
 Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], function () {
     
     Route::get('/',                                                                         ['as'=>'home',                      'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
@@ -16,8 +16,8 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], fun
     Route::match(['get', 'post'], '/es/carro/de/compra/borrar/producto/{rowId}',            ['as'=>'deleteShoppingCart-es',     'uses'	=> '\App\Http\Controllers\ShoppingCartController@deleteShoppingCart']);
     Route::put('/es/carro/de/comprar/actualizar/producto',                                  ['as'=>'updateShoppingCart-es',     'uses'	=> '\App\Http\Controllers\ShoppingCartController@updateShoppingCart']);
 
-    Route::get('/es/account/login',                                                         ['as'=>'login-es',                  'uses'	=> '\App\Http\Controllers\CustomerFrontendController@login']);
-    Route::get('/es/account/logout',                                                        ['as'=>'logout-es',                 'uses'	=> '\App\Http\Controllers\Auth\AuthController@logout']);
+    Route::get('/es/account/login',                                                         ['as'=>'getLogin-es',               'uses'	=> '\App\Http\Controllers\CustomerFrontendController@getLogin']);
+    Route::match(['get', 'post'], '/es/account/logout',                                     ['as'=>'logout-es',                 'uses'	=> '\App\Http\Controllers\CustomerFrontendController@logout']);
 
     Route::get('/es/account/sing-in',                                                       ['as'=>'getSingIn-es',              'uses'	=> '\App\Http\Controllers\CustomerFrontendController@getSingIn']);
     Route::post('/es/account/sing-in',                                                      ['as'=>'postSingIn-es',             'uses'	=> '\App\Http\Controllers\CustomerFrontendController@postSingIn']);
@@ -40,8 +40,7 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'auth:crm']], function(
 });
 
 Route::group(['middleware' => ['web', 'pulsar.navTools']], function () {
-    Route::post('/account/customer/set/auth',                                               ['as' => 'setAuth',                 'uses' => '\App\Http\Controllers\Auth\AuthController@authenticate']);
-
+    Route::post('/es/account/login/',                                                        ['as' => 'postLogin-es',           'uses' => '\App\Http\Controllers\CustomerFrontendController@postLogin']);
 });
 
 

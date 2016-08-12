@@ -9,10 +9,10 @@
     <h1>Login</h1>
     <div class="row">
         <div class="col-md-12">
-            <form method="post" action="{{ route('setAuth') }}">
+            <form method="post" action="{{ route('postLogin-' . user_lang()) }}">
                 {{ csrf_field() }}
                 <!--
-                    types of responses
+                    Use input hidden with name responseType to define response type, values:
                     - redirect
                     - json
                 -->
