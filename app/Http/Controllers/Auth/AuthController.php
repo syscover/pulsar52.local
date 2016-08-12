@@ -107,6 +107,7 @@ class AuthController extends Controller
             }
 
             // set customer class tax if market package is installed
+            // necessary if you have installed market package
             $marketPackage = Package::builder()->find(12);
             if($marketPackage != null && $marketPackage->active_012 == true)
             {
@@ -116,8 +117,8 @@ class AuthController extends Controller
                     auth('crm')->user()->classTax = $groupCustomerClassTax->id_100;
             }
 
-            // Authentication OK!
-            // Reload Shopping cart with new tax rules
+            // authentication OK!
+            // reload ShoppingCart with new tax rules
             if(CartProvider::instance()->getCartItems()->count() > 0)
             {
                 $cartProducts = Product::builder()
@@ -196,14 +197,14 @@ class AuthController extends Controller
     {
         auth('crm')->logout();
 
-        // todo revisar!!! no funciona
-        // Reload Shopping cart with default tax rules
+        // reload Shopping cart with default tax rules
         if(CartProvider::instance()->getCartItems()->count() > 0)
         {
             $cartProducts = Product::builder()
                 ->whereIn('id_111', CartProvider::instance()->getCartItems()->pluck('id'))
                 ->get();
 
+            // get default taxes
             $taxRules = TaxRule::builder()
                 ->where('country_id_103', env('TAX_COUNTRY'))
                 ->where('customer_class_tax_id_106', env('TAX_CUSTOMER_CLASS'))
