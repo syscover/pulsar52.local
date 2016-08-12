@@ -20,7 +20,7 @@ use Syscover\ShoppingCart\Item;
 class ShoppingCartController extends Controller
 {
 
-    public function showShoppingCart()
+    public function getShoppingCart()
     {
         // get cart items from shoppingCart
         $response['cartItems'] = CartProvider::instance()->getCartItems();

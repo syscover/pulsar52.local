@@ -12,7 +12,7 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], fun
     Route::get('/es/product/{category}/{slug}',                                             ['as'=>'product-es',                'uses'	=> '\App\Http\Controllers\MarketFrontendController@getProduct']);
 
     // Shopping cart routes
-    Route::get('/es/carro/de/compra',                                                       ['as'=>'shoppingCart-es',           'uses'	=> '\App\Http\Controllers\ShoppingCartController@showShoppingCart']);
+    Route::get('/es/carro/de/compra',                                                       ['as'=>'getShoppingCart-es',        'uses'	=> '\App\Http\Controllers\ShoppingCartController@getShoppingCart']);
     Route::match(['get', 'post'], '/es/carro/de/compra/anadir/producto/{slug}',             ['as'=>'addShoppingCart-es',        'uses'	=> '\App\Http\Controllers\ShoppingCartController@addShoppingCart']);
     Route::match(['get', 'post'], '/es/carro/de/compra/borrar/producto/{rowId}',            ['as'=>'deleteShoppingCart-es',     'uses'	=> '\App\Http\Controllers\ShoppingCartController@deleteShoppingCart']);
     Route::put('/es/carro/de/comprar/actualizar/producto',                                  ['as'=>'updateShoppingCart-es',     'uses'	=> '\App\Http\Controllers\ShoppingCartController@updateShoppingCart']);
