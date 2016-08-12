@@ -71,7 +71,7 @@ class CustomerFrontendController extends Controller
         $this->logoutPath   = route('home-' . user_lang());
     }
 
-    public function account()
+    public function account(Request $request)
     {
         $response['groups']     = Group::builder()->get();
         $response['customer']   = auth('crm')->user();
@@ -209,7 +209,7 @@ class CustomerFrontendController extends Controller
     }
 
     /**
-     * Logout user.
+     * Logout user and load default tax rules.
      *
      * @return \Illuminate\Http\Response
      */
