@@ -55,7 +55,7 @@
                         <a href="{{ route('productList-' . user_lang()) }}">Products</a>
                     </li>
                     <li>
-                        <a href="{{ route('shoppingCart-' . user_lang()) }}">Shopping cart</a>
+                        <a href="{{ route('getShoppingCart-' . user_lang()) }}">Shopping cart</a>
                     </li>
                     <li>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Account</a>
