@@ -334,4 +334,17 @@ class CustomerFrontendController extends Controller
 
         return redirect(route('account-' . user_lang()));
     }
+
+    /**
+     * Update password from customer
+     *
+     * @param   Request     $request
+     * @return  \Illuminate\Http\RedirectResponse
+     */
+    public function putPassword(Request $request)
+    {
+        CustomerLibrary::updatePassword($request);
+
+        return redirect()->route('account-' . user_lang());
+    }
 }
