@@ -47,7 +47,7 @@ class ShoppingCartController extends Controller
 
         // get image to shopping cart
         $attachment = Attachment::builder()
-            ->where('lang_id', session('userLang'))
+            ->where('lang_id', user_lang())
             ->where('resource_id', 'market-product')
             ->where('family_id', config('www.attachmentsFamily.productSheet'))
             ->where('object_id', $product->id_111)
@@ -108,7 +108,7 @@ class ShoppingCartController extends Controller
         // check idf exist coupon code
         if($request->has('applyCouponCode'))
         {
-            $cartPriceRule = CartPriceRule::builder(session('userLang'))->where('coupon_code_120', 'like', $request->input('applyCouponCode'))->first();
+            $cartPriceRule = CartPriceRule::builder(user_lang())->where('coupon_code_120', 'like', $request->input('applyCouponCode'))->first();
 
             if($cartPriceRule != null)
             {

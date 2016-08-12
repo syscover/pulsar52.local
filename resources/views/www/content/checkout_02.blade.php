@@ -63,47 +63,42 @@
     </div>
     <!-- /heads -->
 
-    <form id="shoppingCartForm" action="{{ route('updateShoppingCart-' . user_lang()) }}" method="post">
-        @foreach($cartItems as $item)
-            <div class="row">
-                <div class="col-md-1">
-                    <img src="https://c.tadst.com/gfx/750w/sunrise-sunset-sun-calculator.jpg?1" class="img-responsive">
-                </div>
-                <div class="col-md-2">
-                    <h4>{{ $item->name }}</h4>
-                </div>
-                <div class="col-md-1">
-                    <h5>{{ $item->getPrice() }} € / unit</h5>
-                </div>
-                <div class="col-md-1">
-                    <h5>{{ $item->getQuantity() }}</h5>
-                </div>
-                <div class="col-md-1">
-                    <h4>{{ $item->getSubtotal() }} €</h4>
-                </div>
-                <div class="col-md-1">
-                    <h4>{{ $item->getDiscountAmount() }} €</h4>
-                </div>
-                <div class="col-md-1">
-                    <h4>{{ $item->getSubtotalWithDiscounts() }} €</h4>
-                </div>
-                <div class="col-md-1">
-                    @foreach($item->getTaxRates() as $taxRate)
-                        <h6>{{ $taxRate }} %</h6>
-                    @endforeach
-                </div>
-                <div class="col-md-1">
-                    <h4>{{ $item->getTaxAmount() }} €</h4>
-                </div>
-                <div class="col-md-1">
-                    <h4>{{ $item->getTotal() }} €</h4>
-                </div>
+    @foreach($cartItems as $item)
+        <div class="row">
+            <div class="col-md-1">
+                <img src="https://c.tadst.com/gfx/750w/sunrise-sunset-sun-calculator.jpg?1" class="img-responsive">
             </div>
-        @endforeach
-        {{ csrf_field() }}
-        <input type="hidden" name="_method" value="PUT">
-        <input type="hidden" name="applyCouponCode">
-    </form>
+            <div class="col-md-2">
+                <h4>{{ $item->name }}</h4>
+            </div>
+            <div class="col-md-1">
+                <h5>{{ $item->getPrice() }} € / unit</h5>
+            </div>
+            <div class="col-md-1">
+                <h5>{{ $item->getQuantity() }}</h5>
+            </div>
+            <div class="col-md-1">
+                <h4>{{ $item->getSubtotal() }} €</h4>
+            </div>
+            <div class="col-md-1">
+                <h4>{{ $item->getDiscountAmount() }} €</h4>
+            </div>
+            <div class="col-md-1">
+                <h4>{{ $item->getSubtotalWithDiscounts() }} €</h4>
+            </div>
+            <div class="col-md-1">
+                @foreach($item->getTaxRates() as $taxRate)
+                    <h6>{{ $taxRate }} %</h6>
+                @endforeach
+            </div>
+            <div class="col-md-1">
+                <h4>{{ $item->getTaxAmount() }} €</h4>
+            </div>
+            <div class="col-md-1">
+                <h4>{{ $item->getTotal() }} €</h4>
+            </div>
+        </div>
+    @endforeach
     <br><br><br><br>
     <div class="row">
         <div class="col-md-6">

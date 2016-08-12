@@ -42,7 +42,7 @@ class MarketFrontendController extends Controller
         // Option 2 - get products
         /*
         $response['products'] = Product::builder()
-            ->where('lang_id_112', session('userLang'))
+            ->where('lang_id_112', user_lang())
             ->where('active_111', true)
             ->orderBy('sorting', 'asc')
             ->get();
@@ -50,7 +50,7 @@ class MarketFrontendController extends Controller
 
 
         // Atention!, if there are only one category by product, you can use slug category for url product
-        $productsCategories = ProductsCategories::builder(session('userLang'))
+        $productsCategories = ProductsCategories::builder(user_lang())
             ->whereIn('product_id_113', $response['products']->pluck('id_111'))
             ->get();
 
@@ -92,7 +92,7 @@ class MarketFrontendController extends Controller
 
         // get atachments to products
         $response['attachments'] = Attachment::builder()
-            ->where('lang_id', session('userLang'))
+            ->where('lang_id', user_lang())
             ->where('resource_id', 'market-product')
             ->where('family_id', config('www.attachmentsFamily.productList'))
             ->orderBy('sorting', 'asc')
@@ -110,14 +110,14 @@ class MarketFrontendController extends Controller
         $response = [];
 
         $response['product'] = Product::builder()
-            ->where('lang_id_112', session('userLang'))
+            ->where('lang_id_112', user_lang())
             ->where('slug_112', $parameters['slug'])
             ->where('active_111', true)
             ->first();
 
         // get atachments to product
         $response['attachments'] = Attachment::builder()
-            ->where('lang_id', session('userLang'))
+            ->where('lang_id', user_lang())
             ->where('resource_id', 'market-product')
             ->where('object_id', $response['product']->id)
             ->where('family_id', config('www.attachmentsFamily.productSheet'))
@@ -150,7 +150,7 @@ class MarketFrontendController extends Controller
         }
         else
         {
-            return redirect()->route('getCheckout02-' . session('userLang'));
+            return redirect()->route('getCheckout02-' . user_lang());
         }
     }
 
@@ -172,7 +172,7 @@ class MarketFrontendController extends Controller
             'comments'          => $request->input('comments'),
         ]);
 
-        return redirect()->route('getCheckout02-' . session('userLang'));
+        return redirect()->route('getCheckout02-' . user_lang());
     }
 
     /**
@@ -204,7 +204,7 @@ class MarketFrontendController extends Controller
             'address'           => $request->input('address'),
         ]);
 
-        return redirect()->route('getCheckout03-' . session('userLang'));
+        return redirect()->route('getCheckout03-' . user_lang());
     }
 
     /**
@@ -316,7 +316,7 @@ class MarketFrontendController extends Controller
         foreach (CartProvider::instance()->cartItems as $item)
         {
             $itemAux = [
-                'lang_id_117'               => session('userLang'),
+                'lang_id_117'               => user_lang(),
                 'order_id_117'              => $order->id_116,
                 'product_id_117'            => $item->id,
                 'name_117'                  => $item->name,
