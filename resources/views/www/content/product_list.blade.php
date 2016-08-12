@@ -30,7 +30,7 @@
                 <br><br>
                 <a href="{{ route('product-'. user_lang(), ['category' => $product->mappedCategory->slug_110, 'slug' => $product->slug_112]) }}">Ver producto</a>
                 <br>
-                <a href="{{ route('addShoppingCart-' . user_lang(), ['slug' => $product->slug_112]) }}">Añadir a carro de compra</a>
+                <a href="{{ route('postShoppingCart-' . user_lang(), ['slug' => $product->slug_112]) }}">Añadir a carro de compra</a>
                 <hr>
             </div>
         </div>

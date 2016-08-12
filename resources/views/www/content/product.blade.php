@@ -42,7 +42,7 @@
     {!! $product->description_112 !!}
 
     <br><br>
-    <a href="{{ route('addShoppingCart-' . user_lang(), ['slug' => $product->slug_112]) }}">
+    <a href="{{ route('postShoppingCart-' . user_lang(), ['slug' => $product->slug_112]) }}">
         Añadir a carro de compra
     </a>
 @stop

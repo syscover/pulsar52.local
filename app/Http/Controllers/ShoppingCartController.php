@@ -20,7 +20,7 @@ use Syscover\ShoppingCart\Item;
 class ShoppingCartController extends Controller
 {
 
-    public function getShoppingCart()
+    public function getShoppingCart(Request $request)
     {
         // get cart items from shoppingCart
         $response['cartItems'] = CartProvider::instance()->getCartItems();
@@ -34,7 +34,7 @@ class ShoppingCartController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function addShoppingCart(Request $request)
+    public function postShoppingCart(Request $request)
     {
         // get parameters from url route
         $parameters = $request->route()->parameters();
@@ -53,7 +53,7 @@ class ShoppingCartController extends Controller
             ->where('object_id', $product->id_111)
             ->first();
 
-        // create a property on product to save image for shopping cart
+        // create a property on product to save image for shopping cart list
         $product->shoppingCartImage = $attachment;
 
         // get tax rule with default parameters
@@ -100,7 +100,7 @@ class ShoppingCartController extends Controller
             dd($e->getMessage());
         }
         
-        return redirect()->route('shoppingCart-' . user_lang());
+        return redirect()->route('getShoppingCart-' . user_lang());
     }
 
     public function updateShoppingCart(Request $request)
@@ -157,7 +157,7 @@ class ShoppingCartController extends Controller
             }
         }
 
-        return redirect()->route('shoppingCart-' . user_lang());
+        return redirect()->route('getShoppingCart-' . user_lang());
     }
 
     public function deleteShoppingCart(Request $request)
@@ -167,6 +167,6 @@ class ShoppingCartController extends Controller
 
         CartProvider::instance()->remove($parameters['rowId']);
 
-        return redirect()->route('shoppingCart-' . user_lang());
+        return redirect()->route('getShoppingCart-' . user_lang());
     }
 }
