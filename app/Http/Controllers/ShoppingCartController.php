@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
+use Syscover\Market\Libraries\CouponLibrary;
 use Syscover\Market\Models\CartPriceRule;
 use Syscover\Market\Models\Product;
 use Syscover\Market\Models\TaxRule;
@@ -168,5 +169,17 @@ class ShoppingCartController extends Controller
         CartProvider::instance()->remove($parameters['rowId']);
 
         return redirect()->route('getShoppingCart-' . user_lang());
+    }
+
+    /**
+     * Check if coupon code is correct
+     *
+     * @param   Request $request
+     * @return  \Illuminate\Http\JsonResponse
+     */
+    public function checkCouponCode(Request $request)
+    {
+        return response()
+            ->json(CouponLibrary::checkCouponCode($request->input('couponCode'), user_lang(), auth('crm')));
     }
 }

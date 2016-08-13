@@ -5,10 +5,6 @@
 @section('head')
     <script>
         $(document).ready(function() {
-            $("#couponCodeBt").on('click', function() {
-                $('[name=applyCouponCode]').val($('[name=couponCode]').val());
-                $('#shoppingCartForm').submit();
-            });
 
             $(".increase, .decrease").on('click', function() {
                 var input = $(this).siblings('input[type=number]');
@@ -21,6 +17,46 @@
                     input.val(parseInt(input.val()) - 1);
                 }
                 $('#shoppingCartForm').submit();
+            });
+
+            $("#couponCodeBt").on('click', function() {
+                $.ajax({
+                    dataType: 'json',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    url: '{{ route('checkCouponCode-' . user_lang()) }}',
+                    data: {
+                        couponCode: $('[name=couponCode]').val()
+                    },
+                    success: function (data) {
+                        if(data.status == 'success')
+                        {
+                            $('[name=applyCouponCode]').val($('[name=couponCode]').val());
+                            $('#shoppingCartForm').submit();
+                        }
+                        else
+                        {
+                            var message = "<h4 class='aligncenter blue-text'>Se han encontrado los siguientes errores</h4>" +
+                                    "<ul>";
+                            $.each(data.errors, function (index, object) {
+                                message += "<li>" + object.trans + "</li>";
+                            });
+                            message += "</ul>";
+
+                            // function to set text in modal alert
+                            $('#couponTextMessage').html(message);
+
+                            // function to show modal
+                            $('#couponMessageModal').modal('show');
+
+                            setTimeout(function(){
+                                $('#couponMessageModal').modal('hide');
+                            }, 10000);
+                        }
+                    }
+                });
             });
         });
     </script>
@@ -198,10 +234,10 @@
             <div class="row">
                 <form>
                     <div class="col-md-7">
-                        <input type="text" name="couponCode" placeholder="Coupon code">
+                        <input class="form-control" type="text" name="couponCode" placeholder="Coupon code">
                     </div>
                     <div class="col-md-5">
-                        <a id="couponCodeBt" href="#">Apply</a>
+                        <a class="btn btn-primary" id="couponCodeBt" href="#">Apply</a>
                     </div>
                 </form>
             </div>
@@ -221,4 +257,21 @@
         </div>
     </div>
     @endif
+
+    <!-- modal coupon message -->
+    <div class="modal fade" id="couponMessageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div id="couponTextMessage" class="col-md-12 "></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /modal coupon message -->
 @stop
