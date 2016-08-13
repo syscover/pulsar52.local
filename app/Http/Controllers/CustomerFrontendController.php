@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Syscover\Comunik\Libraries\ComunikLibrary;
+use Syscover\Comunik\Models\Contact;
 use Syscover\Crm\Libraries\CrmLibrary;
+use Syscover\Crm\Models\Customer;
 use Syscover\Crm\Models\Group;
 use Syscover\Market\Models\GroupCustomerClassTax;
 use Syscover\Market\Models\Product;
@@ -344,8 +346,8 @@ class CustomerFrontendController extends Controller
             // attach contact to groups that you want, use:
             // <input name="contactGroups[]" value="1">, <input name="contactGroups[]" value="2">, <input name="contactGroups[]" value="3">, etc.
             // to define a input array
-            if(($request->has('subscribeEmail') || $request->has('subscribeMobile')) && $request->has('contactGroups'))
-                $contact->getGroups()->attach($request->imput('contactGroups'));
+            if(($request->has('subscribeEmail') || $request->has('subscribeMobile')) && $request->has('contactGroups') && is_array($request->input('contactGroups')))
+                $contact->getGroups()->attach($request->input('contactGroups'));
         }
 
         // auth the customer created
@@ -368,7 +370,7 @@ class CustomerFrontendController extends Controller
         }
         else
         {
-            return redirect(route('account-' . user_lang()));
+            return redirect()->route('account-' . user_lang());
         }
     }
 
@@ -387,7 +389,33 @@ class CustomerFrontendController extends Controller
         if(! $request->has('password'))
             $rules['password'] = '';
 
-        $this->validate($request, $rules);
+        // optional automatic validate
+        // $this->validate($request, $rules);
+
+        // manual validate
+        $validator = Validator::make($request->all(), $rules);
+
+        // manage fails
+        if ($validator->fails())
+        {
+            if($request->input('responseType') == 'json')
+            {
+                return response()->json([
+                    'status'    => 'error',
+                    'errors'    => $validator->messages()
+                ], 422);
+            }
+            else
+            {
+                return redirect()
+                    ->route('account-' . user_lang())
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+        }
+
+        // get old customer
+        $oldCustomer = Customer::builder()->find($request->input('id'));
 
         // update customer
         $customer = CrmLibrary::updateCustomer($request);
@@ -396,12 +424,37 @@ class CustomerFrontendController extends Controller
         if($request->has('password'))
             CrmLibrary::updatePassword($request);
 
+        // update contact
+        if($request->input('updateContact') == '1')
+        {
+            // get contact from old data
+            $contact = Contact::builder()->where('email_041', $oldCustomer->email_301)->orWhere('mobile_041', $oldCustomer->mobile_301)->first();
+
+            // overwrite customer id by
+            $request->merge(['id' => $contact->id_401]);
+
+            // update contact
+            ComunikLibrary::updateContact($request);
+        }
 
 
         // auth the customer created
         Auth::guard('crm')->login($customer);
 
-        return redirect(route('account-' . user_lang()));
+        // show message
+        $request->session()->flash('customerUpdated', true);
+
+        if($request->input('responseType') == 'json')
+        {
+            return response()->json([
+                'status'    => 'success',
+                'customer'  => auth('crm')->user()
+            ]);
+        }
+        else
+        {
+            return redirect()->route('account-' . user_lang());
+        }
     }
 
     /**
