@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-use Syscover\Crm\Libraries\CustomerLibrary;
+use Syscover\Crm\Libraries\CrmLibrary;
 use Syscover\Crm\Models\Group;
 use Syscover\Market\Models\GroupCustomerClassTax;
 use Syscover\Market\Models\Product;
@@ -71,6 +71,12 @@ class CustomerFrontendController extends Controller
         $this->logoutPath   = route('home-' . user_lang());
     }
 
+    /**
+     * Show account view
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function account(Request $request)
     {
         $response['groups']     = Group::builder()->get();
@@ -79,6 +85,11 @@ class CustomerFrontendController extends Controller
         return view('www.content.account', $response);
     }
 
+    /**
+     * Show login view
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function getLogin()
     {
         $response = [];
@@ -179,6 +190,7 @@ class CustomerFrontendController extends Controller
                 }
             }
 
+            // response
             if($request->input('responseType') == 'json')
             {
                 return response()->json([
@@ -262,6 +274,11 @@ class CustomerFrontendController extends Controller
         return redirect($this->logoutPath);
     }
 
+    /**
+     * Show sing in view
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function getSingIn()
     {
         // get customer groups
@@ -270,15 +287,21 @@ class CustomerFrontendController extends Controller
         return view('www.content.sing_in', $response);
     }
 
+    /**
+     * Create customer in CRM module and login customer created
+     *
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function postSingIn(Request $request)
     {
-        // automatic validate
-        $this->validate($request, [
-            'name'      => 'required|max:255',
-            'surname'   => 'required|max:255',
-            'email'     => 'required|max:255|email|unique:009_301_customer,email_301',
-            'password'  => 'required|between:4,15|same:repassword',
-        ]);
+        // optional automatic validate
+        // $this->validate($request, [
+        //     'name'      => 'required|max:255',
+        //     'surname'   => 'required|max:255',
+        //     'email'     => 'required|max:255|email|unique:009_301_customer,email_301',
+        //     'password'  => 'required|between:4,15|same:repassword',
+        // ]);
 
         // manual validate
         $validator = Validator::make($request->all(), [
@@ -287,20 +310,52 @@ class CustomerFrontendController extends Controller
             'email'     => 'required|max:255|email|unique:009_301_customer,email_301',
             'password'  => 'required|between:4,15|same:repassword',
         ]);
+
+        // manage fails
         if ($validator->fails())
         {
-            return redirect(route(''))
-                ->withErrors($validator)
-                ->withInput();
+            if($request->input('responseType') == 'json')
+            {
+                return response()->json([
+                    'status'    => 'error',
+                    'errors'    => $validator->messages()
+                ], 422);
+            }
+            else
+            {
+                return redirect()
+                    ->route('getSingIn-' . user_lang())
+                    ->withErrors($validator)
+                    ->withInput();
+            }
         }
 
         // create new customer
-        $customer =  CustomerLibrary::createCustomer($request);
+        $customer =  CrmLibrary::createCustomer($request);
 
         // auth the customer created
         Auth::guard('crm')->login($customer);
 
-        return redirect(route('account-' . user_lang()));
+        $dataMail = $request->all();
+
+        // send email confirmation to customer
+        Mail::send('email.content.welcome_email', ['data' => $dataMail], function ($message) use ($dataMail) {
+            $message->from(env('MAIL_USERNAME'), env('MAIL_USERNAME'));
+            $message->to($dataMail['email'], $dataMail['name'])->subject('Bienvenido a Ruralka');
+            $message->bcc('agarcia@syscover.copm', 'Alejandro Garcia Ximenez - SYSCOVER');
+        });
+
+        if($request->input('responseType') == 'json')
+        {
+            return response()->json([
+                'status'    => 'success',
+                'customer'  => auth('crm')->user()
+            ]);
+        }
+        else
+        {
+            return redirect(route('account-' . user_lang()));
+        }
     }
 
     public function putSingIn(Request $request)
@@ -321,11 +376,11 @@ class CustomerFrontendController extends Controller
         $this->validate($request, $rules);
 
         // update customer
-        $customer = CustomerLibrary::updateCustomer($request);
+        $customer = CrmLibrary::updateCustomer($request);
 
         // update password
         if($request->has('password'))
-            CustomerLibrary::updatePassword($request);
+            CrmLibrary::updatePassword($request);
 
 
 
@@ -343,7 +398,7 @@ class CustomerFrontendController extends Controller
      */
     public function putPassword(Request $request)
     {
-        CustomerLibrary::updatePassword($request);
+        CrmLibrary::updatePassword($request);
 
         return redirect()->route('account-' . user_lang());
     }
