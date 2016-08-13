@@ -431,7 +431,7 @@ class CustomerFrontendController extends Controller
             $contact = Contact::builder()->where('email_041', $oldCustomer->email_301)->orWhere('mobile_041', $oldCustomer->mobile_301)->first();
 
             // overwrite customer id by
-            $request->merge(['id' => $contact->id_401]);
+            $request->merge(['id' => $contact->id_041]);
 
             // update contact
             ComunikLibrary::updateContact($request);
