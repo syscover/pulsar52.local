@@ -2,9 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Syscover\Comunik\Libraries\ComunikLibrary;
 use Syscover\Crm\Libraries\CrmLibrary;
 use Syscover\Crm\Models\Group;
 use Syscover\Market\Models\GroupCustomerClassTax;
@@ -331,7 +333,20 @@ class CustomerFrontendController extends Controller
         }
 
         // create new customer
-        $customer =  CrmLibrary::createCustomer($request);
+        $customer = CrmLibrary::createCustomer($request);
+
+        // create new contact
+        if($request->input('createContact') == '1')
+        {
+            // create contact on comunik package
+            $contact = ComunikLibrary::createContact($request);
+
+            // attach contact to groups that you want, use:
+            // <input name="contactGroups[]" value="1">, <input name="contactGroups[]" value="2">, <input name="contactGroups[]" value="3">, etc.
+            // to define a input array
+            if(($request->has('subscribeEmail') || $request->has('subscribeMobile')) && $request->has('contactGroups'))
+                $contact->getGroups()->attach($request->imput('contactGroups'));
+        }
 
         // auth the customer created
         Auth::guard('crm')->login($customer);
@@ -340,9 +355,8 @@ class CustomerFrontendController extends Controller
 
         // send email confirmation to customer
         Mail::send('email.content.welcome_email', ['data' => $dataMail], function ($message) use ($dataMail) {
-            $message->from(env('MAIL_USERNAME'), env('MAIL_USERNAME'));
-            $message->to($dataMail['email'], $dataMail['name'])->subject('Bienvenido a Ruralka');
-            $message->bcc('agarcia@syscover.copm', 'Alejandro Garcia Ximenez - SYSCOVER');
+            $message->from(config('mail.from.address'), config('mail.from.name'));
+            $message->to($dataMail['email'], $dataMail['name'])->subject('Welcome to ...');
         });
 
         if($request->input('responseType') == 'json')
