@@ -424,11 +424,18 @@ class CustomerFrontendController extends Controller
         if($request->has('password'))
             CrmLibrary::updatePassword($request);
 
-        // update contact
-        if($request->input('updateContact') == '1')
+        // update contact if there are email and mobile
+        if($request->input('updateContact') == '1' && (! empty($oldCustomer->email_301) || ! empty($oldCustomer->mobile_301)))
         {
             // get contact from old data
-            $contact = Contact::builder()->where('email_041', $oldCustomer->email_301)->orWhere('mobile_041', $oldCustomer->mobile_301)->first();
+            $query = Contact::builder();
+
+            if(! empty($oldCustomer->email_301))
+                $query->where('email_041', $oldCustomer->email_301);
+            elseif (! empty($oldCustomer->mobile_301))
+                $query->where('mobile_041', $oldCustomer->mobile_301);
+
+            $contact = $query->first();
 
             // overwrite customer id by
             $request->merge(['id' => $contact->id_041]);
