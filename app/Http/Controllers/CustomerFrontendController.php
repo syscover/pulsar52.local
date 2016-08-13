@@ -437,7 +437,6 @@ class CustomerFrontendController extends Controller
             ComunikLibrary::updateContact($request);
         }
 
-
         // auth the customer created
         Auth::guard('crm')->login($customer);
 
