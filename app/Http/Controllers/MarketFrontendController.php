@@ -9,6 +9,7 @@ use Syscover\Market\Models\Product;
 use Syscover\Market\Models\ProductsCategories;
 use Syscover\Market\Models\TaxRule;
 use Syscover\Pulsar\Models\Attachment;
+use Syscover\Pulsar\Models\Country;
 use Syscover\ShoppingCart\Facades\CartProvider;
 
 /**
@@ -126,6 +127,48 @@ class MarketFrontendController extends Controller
 
 
         return view('www.content.product', $response);
+    }
+
+    /**
+     * Function to show order to customer
+     *
+     * @param   Request     $request
+     * @return  \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getOrder(Request $request)
+    {
+        // get parameters from url route
+        $parameters = $request->route()->parameters();
+
+        // get customer from session
+        $response['customer'] = auth('crm')->user();
+
+        // get Order
+        $response['order'] = Order::builder()
+            ->where('id_116', $parameters['order'])
+            ->where('customer_id_116', $response['customer']->id_301)
+            ->first();
+
+        // get order rows
+        $response['rows'] = $response['order']->getOrderRows;
+
+        // instanciamos el data como objeto
+        $response['rows']->map(function ($item, $key) {
+            return $item->data_117 = json_decode($item->data_117);
+        });
+
+        // obtenemos los paises para mostrar el nombre
+        $response['countries'] = Country::builder()
+            ->where('lang_id_002', $response['order']->lang_id_301)
+            ->get();
+
+        // variable para hacer un track de los ingresos pagados
+        if($request->session()->has('trackPaidOrder'))
+        {
+            $response['trackPaidOrder']  =true;
+        }
+
+        return view('www.market.order', $response);
     }
 
     /**
