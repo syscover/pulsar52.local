@@ -104,48 +104,18 @@ class ShoppingCartController extends Controller
         return redirect()->route('getShoppingCart-' . user_lang());
     }
 
+    /**
+     * Update shopping cart quantity and apply coupon code, this method is call from shopping cart view
+     *
+     * @param   Request     $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function putShoppingCart(Request $request)
     {
         // check idf exist coupon code
         if($request->has('applyCouponCode'))
         {
-            $cartPriceRule = CartPriceRule::builder(user_lang())->where('coupon_code_120', 'like', $request->input('applyCouponCode'))->first();
-
-            if($cartPriceRule != null)
-            {
-                try
-                {
-                    CartProvider::instance()->addCartPriceRule(
-                        new PriceRule(
-                            $cartPriceRule->name_text_value,
-                            $cartPriceRule->description_text_value,
-                            $cartPriceRule->discount_type_id_120,
-                            $cartPriceRule->free_shipping_120,
-                            $cartPriceRule->discount_fixed_amount_120,
-                            $cartPriceRule->discount_percentage_120,
-                            $cartPriceRule->maximum_discount_amount_120,
-                            $cartPriceRule->apply_shipping_amount_120,
-                            $cartPriceRule->combinable_120
-                        )
-                    );
-                }
-                catch (ShoppingCartNotCombinablePriceRuleException $e)
-                {
-                    dd($e->getMessage());
-                }
-                catch (\Exception $e)
-                {
-                    dd($e->getMessage());
-                }
-            }
-            else
-            {
-                // cupón no existente
-            }
-
-
-            // todo, add code al hitórico de uso
-            //CouponLibrary::addCouponCode(CartProvider::instance(), $request->input('applyCode'), user_lang(), auth('crm'));
+            CouponLibrary::addCouponCode(CartProvider::instance(), $request->input('applyCouponCode'), user_lang(), auth('crm'));
         }
 
         $cartItems = CartProvider::instance()->getCartItems();
