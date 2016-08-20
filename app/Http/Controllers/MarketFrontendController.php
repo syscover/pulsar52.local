@@ -23,6 +23,8 @@ use Syscover\ShoppingCart\Facades\CartProvider;
 class MarketFrontendController extends Controller
 {
     /**
+     * Function to show product list
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function getProductsList()
@@ -103,6 +105,12 @@ class MarketFrontendController extends Controller
         return view('www.content.product_list', $response);
     }
 
+    /**
+     * function to show singular product
+     *
+     * @param   Request     $request
+     * @return  \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function getProduct(Request $request)
     {
         // get parameters from url route
@@ -152,21 +160,15 @@ class MarketFrontendController extends Controller
         // get order rows
         $response['rows'] = $response['order']->getOrderRows;
 
-        // instanciamos el data como objeto
+        // transform data column to object
         $response['rows']->map(function ($item, $key) {
             return $item->data_117 = json_decode($item->data_117);
         });
 
-        // obtenemos los paises para mostrar el nombre
+        // if need name of country, obtain all countries
         $response['countries'] = Country::builder()
             ->where('lang_id_002', $response['order']->lang_id_301)
             ->get();
-
-        // variable para hacer un track de los ingresos pagados
-        if($request->session()->has('trackPaidOrder'))
-        {
-            $response['trackPaidOrder']  =true;
-        }
 
         return view('www.market.order', $response);
     }
@@ -197,6 +199,12 @@ class MarketFrontendController extends Controller
         }
     }
 
+    /**
+     * Function to store data billing in shipping cart
+     *
+     * @param   Request     $request
+     * @return  \Illuminate\Http\RedirectResponse
+     */
     public function postCheckout01(Request $request)
     {
         $response['cartItems']  = CartProvider::instance()->getCartItems();
@@ -232,6 +240,12 @@ class MarketFrontendController extends Controller
         return view('www.content.checkout_02', $response);
     }
 
+    /**
+     * To store billing data in shopping cart
+     *
+     * @param   Request     $request
+     * @return  \Illuminate\Http\RedirectResponse
+     */
     public function postCheckout02(Request $request)
     {
         CartProvider::instance()->setInvoice([
@@ -271,6 +285,11 @@ class MarketFrontendController extends Controller
         return view('www.content.checkout_03', $response);
     }
 
+    /**
+     * Function to store order
+     *
+     * @param Request $request
+     */
     public function postCheckout03(Request $request)
     {
         // create data order
