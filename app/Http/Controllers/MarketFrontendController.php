@@ -1,9 +1,12 @@
 <?php namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Sermepa\Tpv\Tpv;
+use Syscover\Crm\Libraries\CrmLibrary;
 use Syscover\Market\Libraries\PayPalLibrary;
 use Syscover\Market\Models\Order;
+use Syscover\Market\Models\OrderRow;
 use Syscover\Market\Models\PaymentMethod;
 use Syscover\Market\Models\Product;
 use Syscover\Market\Models\ProductsCategories;
@@ -292,11 +295,56 @@ class MarketFrontendController extends Controller
      */
     public function postCheckout03(Request $request)
     {
-        // create data order
-        $orderDate  = date('U');
-        $customer   = auth('crm')->user();
 
-        // create order
+
+
+
+        // check that there are items in shopping cart
+        if(CartProvider::instance()->getCartItems()->count() == 0)
+        {
+            if($request->input('responseType') == 'json')
+            {
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Shopping cart is empty'
+                ]);
+            }
+            else
+            {
+                return redirect()
+                    ->route('getCheckout03-' . user_lang())
+                    ->withErrors(['Error, shopping cart is empty']);
+            }
+        }
+
+        // check if there is a customer loged
+        if(auth('crm')->guest())
+        {
+            if($request->input('newCustomer') == 'create')
+            {
+                // if customer not exist and have data to create, we create customer
+                $customer = CrmLibrary::createCustomer($request);
+
+                // login new customer
+                Auth::guard('crm')->login($customer);
+
+            }
+            else
+            {
+                return redirect()
+                    ->route('getCheckout03-' . user_lang())
+                    ->withErrors(['Error, there isn\'t any customer loged']);
+            }
+        }
+        else
+        {
+            // get customer from session
+            $customer = auth('crm')->user();
+        }
+
+
+        // create data order
+        $orderDate = date('U');
         $orderAux = [
             'date_116'                          => $orderDate,
             'date_text_116'				        => date(config('pulsar.datePattern') . ' H:i', $orderDate),
@@ -310,13 +358,13 @@ class MarketFrontendController extends Controller
             'gift_to_116'                       => null,
             'gift_message_116'                  => null,
 
-            'subtotal_116'                      => CartProvider::instance()->subtotal(),
-            'shipping_116'                      => CartProvider::instance()->hasFreeShipping()? 0 :  CartProvider::instance()->getShippingAmount(),
+            'subtotal_116'                      => CartProvider::instance()->subtotal,
+            'shipping_116'                      => CartProvider::instance()->hasFreeShipping()? 0 :  CartProvider::instance()->shippingAmount,
             'row_discount_amount_116'           => 0,
             'total_discount_percentage_116'     => 0,
-            'total_discount_amount_116'         => CartProvider::instance()->discount(),
+            'total_discount_amount_116'         => CartProvider::instance()->discountAmount,
             'tax_amount_116'                    => 0,
-            'total_116'                         => CartProvider::instance()->total(),
+            'total_116'                         => CartProvider::instance()->total,
 
             'customer_id_116'                   => $customer->id_301,
             'customer_company_116'              => $customer->company_301,
@@ -339,7 +387,7 @@ class MarketFrontendController extends Controller
             'has_invoice_116'                   => $request->has('hasInvoice'),
             'invoiced_116'                      => false,
 
-            // comprobamos si hay envío que realizar
+            // check if there are to do a delivery
             'has_shipping_116'                  => CartProvider::instance()->hasShipping()
         ];
 
@@ -372,30 +420,109 @@ class MarketFrontendController extends Controller
         $order = Order::create($orderAux);
 
 
-
         // Create items from shopping cart
         $items = [];
-        foreach (CartProvider::instance()->cartItems as $item)
+        foreach (CartProvider::instance()->getCartItems() as $item)
         {
             $itemAux = [
-                'lang_id_117'               => user_lang(),
-                'order_id_117'              => $order->id_116,
-                'product_id_117'            => $item->id,
-                'name_117'                  => $item->name,
-                'description_117'           => $item->options->product->description_112,
-                'data_117'                  => json_encode(['product' => $item->options->product]),
-                'price_117'                 => $item->price, // unit price without tax
-                'quantity_117'              => $item->quantity,
-                'subtotal_117'              => $item->subtotal,
-                'discount_percentage_117'   => null,
-                'discount_amount_117'       => 0,
-                'tax_amount_117'            => 0
-            ];
+                'lang_id_117'                               => user_lang(),
+                'order_id_117'                              => $order->id_116,
+                'product_id_117'                            => $item->id,
+                'name_117'                                  => $item->name,
+                'description_117'                           => $item->options->product->description_112,
+                'data_117'                                  => json_encode(['product' => $item->options->product]),
+                'price_117'                                 => $item->price,        // unit price without tax
+                'quantity_117'                              => $item->quantity,     // number of units
+                'subtotal_117'                              => $item->subtotal,     // subtotal without tax
 
+                // discounts
+                'discount_subtotal_percentage_117'          => $item->discountSubtotalPercentage,
+                'discount_total_percentage_117'             => $item->discountTotalPercentage,
+                'discount_subtotal_percentage_amount_117'   => $item->discountSubtotalPercentageAmount,
+                'discount_total_percentage_amount_117'      => $item->discountTotalPercentageAmount,
+                'discount_subtotal_fixed_amount_117'        => $item->discountSubtotalFixedAmount,
+                'discount_total_fixed_amount_117'           => $item->discountTotalFixedAmount,
+                'discount_amount_117'                       => $item->discountAmount,
+
+                // taxes
+                'tax_rules_117'                             => json_encode($item->taxRules->values()),
+                'tax_amount_117'                            => $item->taxAmount,
+
+                // gift fields
+                // to set gift, create array in options with gift key, and keys: from, to, message
+                'gift_117'                                  => $item->options->gift != null? true : false,
+                'gift_from_117'                             => isset($item->options->gift['from'])? $item->options->gift['from'] : null,
+                'gift_to_117'                               => isset($item->options->gift['to'])? $item->options->gift['to'] : null,
+                'gift_message_117'                          => isset($item->options->gift['message'])? $item->options->gift['message'] : null
+            ];
 
             // add item to array
             $items[] = $itemAux;
         }
+
+        // set items like rows
+        OrderRow::insert($items);
+
+
+        // store cart prices rules
+        if(CartProvider::instance()->getPriceRules()->count() > 0)
+        {
+            $cartPriceRules             = CartProvider::instance()->getPriceRules();
+            $customerDiscountHistory    = [];
+
+            foreach($cartPriceRules as $cartPriceRule)
+            {
+                $customerDiscountHistory[] = [
+                    'date_126'                          => $orderDate,
+                    'customer_id_126'                   => $customer->id_301,
+                    'order_id_126'                      => $order->id_116,
+                    'active_126'                        => true,                // activate this discount
+
+                    // see config/market.php section Discounts rules families
+                    // 1 - discount from, cart price rule
+                    // 2 - discount from, catalog price rule
+                    // 3 - discount from, customer rule discount
+                    'rule_family_id_126'                => 1,
+
+                    'has_coupon_126'                    => $cartPriceRule->has_coupon_120,
+                    'coupon_code_126'                   => $cartPriceRule->coupon_code_120,
+                    'rule_id_126'                       => $cartPriceRule->id_120,
+
+                    //'customer_discount_id_126'        => null,
+                    'name_text_id_126'                  => $cartPriceRule->name_text_id_120,
+                    'description_text_id_126'           => $cartPriceRule->description_text_id_120,
+                    'name_text_value_126'               => $cartPriceRule->name_text_value,
+                    'description_text_value_126'        => $cartPriceRule->description_text_value,
+
+                    // see config/market.php section Discount type on shopping cart
+                    // 1 - without discount
+                    // 2 - discount percentage subtotal
+                    // 3 - discount fixed amount subtotal
+                    // 4 - discount percentage total
+                    // 5 - discount fixed amount total
+                    'discount_type_id_126'              => $cartPriceRule->discount_type_id_120,
+
+                    'discount_fixed_amount_126'         => $cartPriceRule->discount_fixed_amount_120,
+                    'discount_percentage_126'           => $cartPriceRule->discount_percentage_120,
+
+                    // si el descuento es sobre porcentaje, registramos la cantida a descontar de esta regla de carro
+                    'discount_percentage_amount_126'    => $cartPriceRule->discount_type_id_126 == 2? $cartPriceRule->discount_amount : null,
+                    'maximum_discount_amount_126'       => $cartPriceRule->maximum_discount_amount_120,
+                    'apply_shipping_amount_126'         => $cartPriceRule->apply_shipping_amount_120,
+
+                    'free_shipping_126'                 => $cartPriceRule->free_shipping_120,
+
+                    'rules_126'                         => null,
+                ];
+            }
+        }
+
+
+
+
+        // destroy shopping cart
+        CartProvider::instance()->destroy();
+
 
         // Redsys Payment
         if($request->input('paymentMethod') === '1')

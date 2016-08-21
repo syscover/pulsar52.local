@@ -21,6 +21,12 @@ use Syscover\ShoppingCart\Item;
 class ShoppingCartController extends Controller
 {
 
+    /**
+     * Show shopping cart
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function getShoppingCart(Request $request)
     {
         // get cart items from shoppingCart
