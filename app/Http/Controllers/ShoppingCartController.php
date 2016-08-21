@@ -98,9 +98,20 @@ class ShoppingCartController extends Controller
         try
         {
             // intance row to add product
-            CartProvider::instance()->add(new Item($product->id_111, $product->name_112, 1, $product->price_111, $product->weight_111, $isTransportable, $taxRulesShoppingCart,[
-                'product' => $optionsProduct
-            ]));
+            CartProvider::instance()->add(
+                new Item(
+                    $product->id_111,
+                    $product->name_112,
+                    1,
+                    $product->price_111,
+                    $product->weight_111,
+                    $isTransportable,
+                    $taxRulesShoppingCart,
+                    [
+                        'product' => $optionsProduct
+                    ]
+                )
+            );
         }
         catch (\Exception $e)
         {

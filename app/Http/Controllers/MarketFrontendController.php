@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Auth;
 use Sermepa\Tpv\Tpv;
 use Syscover\Crm\Libraries\CrmLibrary;
 use Syscover\Market\Libraries\PayPalLibrary;
+use Syscover\Market\Models\CartPriceRule;
+use Syscover\Market\Models\CustomerDiscountHistory;
 use Syscover\Market\Models\Order;
 use Syscover\Market\Models\OrderRow;
 use Syscover\Market\Models\PaymentMethod;
@@ -295,10 +297,6 @@ class MarketFrontendController extends Controller
      */
     public function postCheckout03(Request $request)
     {
-
-
-
-
         // check that there are items in shopping cart
         if(CartProvider::instance()->getCartItems()->count() == 0)
         {
@@ -472,6 +470,9 @@ class MarketFrontendController extends Controller
 
             foreach($cartPriceRules as $cartPriceRule)
             {
+                // rule obtain from database, this object is instance in Syscover\Market\Libraries\CouponLibrary::addCouponCode
+                $priceRule = $cartPriceRule->options->priceRule;
+
                 $customerDiscountHistory[] = [
                     'date_126'                          => $orderDate,
                     'customer_id_126'                   => $customer->id_301,
@@ -484,15 +485,15 @@ class MarketFrontendController extends Controller
                     // 3 - discount from, customer rule discount
                     'rule_family_id_126'                => 1,
 
-                    'has_coupon_126'                    => $cartPriceRule->has_coupon_120,
-                    'coupon_code_126'                   => $cartPriceRule->coupon_code_120,
-                    'rule_id_126'                       => $cartPriceRule->id_120,
+                    'has_coupon_126'                    => $priceRule->has_coupon_120,
+                    'coupon_code_126'                   => $priceRule->coupon_code_120,
+                    'rule_id_126'                       => $priceRule->id_120,
 
                     //'customer_discount_id_126'        => null,
-                    'name_text_id_126'                  => $cartPriceRule->name_text_id_120,
-                    'description_text_id_126'           => $cartPriceRule->description_text_id_120,
-                    'name_text_value_126'               => $cartPriceRule->name_text_value,
-                    'description_text_value_126'        => $cartPriceRule->description_text_value,
+                    'name_text_id_126'                  => $priceRule->name_text_id_120,
+                    'description_text_id_126'           => $priceRule->description_text_id_120,
+                    'name_text_value_126'               => $priceRule->name_text_value,
+                    'description_text_value_126'        => $priceRule->description_text_value,
 
                     // see config/market.php section Discount type on shopping cart
                     // 1 - without discount
@@ -500,25 +501,37 @@ class MarketFrontendController extends Controller
                     // 3 - discount fixed amount subtotal
                     // 4 - discount percentage total
                     // 5 - discount fixed amount total
-                    'discount_type_id_126'              => $cartPriceRule->discount_type_id_120,
+                    'discount_type_id_126'              => $priceRule->discount_type_id_120,
 
-                    'discount_fixed_amount_126'         => $cartPriceRule->discount_fixed_amount_120,
-                    'discount_percentage_126'           => $cartPriceRule->discount_percentage_120,
+                    // fixed amount to discount over shopping cart
+                    'discount_fixed_amount_126'         => $priceRule->discount_fixed_amount_120,
 
-                    // si el descuento es sobre porcentaje, registramos la cantida a descontar de esta regla de carro
-                    'discount_percentage_amount_126'    => $cartPriceRule->discount_type_id_126 == 2? $cartPriceRule->discount_amount : null,
-                    'maximum_discount_amount_126'       => $cartPriceRule->maximum_discount_amount_120,
-                    'apply_shipping_amount_126'         => $cartPriceRule->apply_shipping_amount_120,
+                    // percentage to discount over shopping cart
+                    'discount_percentage_126'           => $priceRule->discount_percentage_120,
 
-                    'free_shipping_126'                 => $cartPriceRule->free_shipping_120,
+                    // limit amount to discount, if the discount is a percentage
+                    'maximum_discount_amount_126'       => $priceRule->maximum_discount_amount_120,
 
-                    'rules_126'                         => null,
+                    // discount amount of this rule
+                    'discount_percentage_amount_126'    => $priceRule->discountAmount,
+
+                    // check if apply discount to shipping amount
+                    'apply_shipping_amount_126'         => $priceRule->apply_shipping_amount_120,
+
+                    // check if this discount has free shipping
+                    'free_shipping_126'                 => $priceRule->free_shipping_120,
+
+                    // rule encode in json format
+                    'rules_126'                         => json_encode($cartPriceRule),
                 ];
+
+                // increment total used in cart price rule
+                CartPriceRule::where('id_120', $priceRule->id_120)->increment('total_used_120');
             }
+
+            // save price rule in customer discount history
+            CustomerDiscountHistory::insert($customerDiscountHistory);
         }
-
-
-
 
         // destroy shopping cart
         CartProvider::instance()->destroy();
