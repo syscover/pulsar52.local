@@ -219,7 +219,7 @@ class MarketFrontendController extends Controller
         $response['customer']   = auth('crm')->user();
 
         // store shipping data on shopping cart
-        CartProvider::instance()->setShipping([
+        CartProvider::instance()->setShippingData([
             'name'              => $request->input('name'),
             'surname'           => $request->input('surname'),
             'country'           => $request->input('country'),
@@ -243,7 +243,7 @@ class MarketFrontendController extends Controller
     {
         $response['cartItems']      = CartProvider::instance()->getCartItems();
         $response['customer']       = auth('crm')->user();
-        $response['shipping']       = CartProvider::instance()->getShipping();
+        $response['shippingData']   = CartProvider::instance()->getShippingData();
 
         return view('www.content.checkout_02', $response);
     }
@@ -281,7 +281,7 @@ class MarketFrontendController extends Controller
     {
         $response['cartItems']      = CartProvider::instance()->getCartItems();
         $response['customer']       = auth('crm')->user();
-        $response['shipping']       = CartProvider::instance()->getShipping();
+        $response['shippingData']   = CartProvider::instance()->getShippingData();
         $response['invoice']        = CartProvider::instance()->getInvoice();
 
         $response['paymentMethods'] = PaymentMethod::builder()
@@ -321,14 +321,13 @@ class MarketFrontendController extends Controller
         // check if there is a customer loged
         if(auth('crm')->guest())
         {
+            // we can select to create a customer if not exist
             if($request->input('newCustomer') == 'create')
             {
-                // if customer not exist and have data to create, we create customer
                 $customer = CrmLibrary::createCustomer($request);
 
                 // login new customer
                 Auth::guard('crm')->login($customer);
-
             }
             else
             {
@@ -354,19 +353,20 @@ class MarketFrontendController extends Controller
             'payment_method_id_116'             => $request->input('paymentMethod'),
             'comments_116'                      => null,
 
+            // set gift data to all order
             'has_gift_116'                      => false,
             'gift_from_116'                     => null,
             'gift_to_116'                       => null,
             'gift_message_116'                  => null,
 
+            // set amounts to order
             'subtotal_116'                      => CartProvider::instance()->subtotal,
             'shipping_116'                      => CartProvider::instance()->hasFreeShipping()? 0 :  CartProvider::instance()->shippingAmount,
-            'row_discount_amount_116'           => 0,
-            'total_discount_percentage_116'     => 0,
             'total_discount_amount_116'         => CartProvider::instance()->discountAmount,
-            'tax_amount_116'                    => 0,
+            'tax_amount_116'                    => CartProvider::instance()->getTaxAmount(),    // Total tax amount
             'total_116'                         => CartProvider::instance()->total,
 
+            // customer data
             'customer_id_116'                   => $customer->id_301,
             'customer_company_116'              => $customer->company_301,
             'customer_tin_116'                  => $customer->tin_301,
@@ -376,6 +376,7 @@ class MarketFrontendController extends Controller
             'customer_phone_116'                => $customer->phone_301,
             'customer_mobile_116'               => $customer->mobile_301,
 
+            // invoice data
             'invoice_country_id_116'            => $customer->country_id_301,
             'invoice_territorial_area_1_id_116' => $customer->territorial_area_1_id_301,
             'invoice_territorial_area_2_id_116' => $customer->territorial_area_2_id_301,
@@ -386,7 +387,7 @@ class MarketFrontendController extends Controller
             'invoice_latitude_116'              => $customer->latitude_301,
             'invoice_longitude_116'             => $customer->longitude_301,
             'has_invoice_116'                   => $request->has('hasInvoice'),
-            'invoiced_116'                      => false,
+            'invoiced_116'                      => false,   // check if has been created invoice on billing program
 
             // check if there are to do a delivery
             'has_shipping_116'                  => CartProvider::instance()->hasItemTransportable()
@@ -395,25 +396,25 @@ class MarketFrontendController extends Controller
         // if cart has shipping, set shipping in order
         if(CartProvider::instance()->hasItemTransportable())
         {
-            $shipping = CartProvider::instance()->getShipping();
+            $shippingData   = CartProvider::instance()->getShippingData();
 
-            $orderAux = array_merge($orderAux, [
-                'shipping_company_116'                  => isset($shipping['company'])? $shipping['company'] : null,
-                'shipping_name_116'                     => isset($shipping['name'])? ucfirst($shipping['name']) : null,
-                'shipping_surname_116'                  => isset($shipping['surname'])? ucfirst($shipping['surname']) : null,
-                'shipping_email_116'                    => isset($shipping['email'])? strtolower($shipping['email']) : null,
-                'shipping_phone_116'                    => isset($shipping['phone'])? $shipping['phone'] : null,
-                'shipping_mobile_116'                   => isset($shipping['mobile'])? $shipping['mobile'] : null,
-                'shipping_country_id_116'               => isset($shipping['country'])? $shipping['country'] : null,
-                'shipping_territorial_area_1_id_116'    => isset($shipping['territorialArea1'])? $shipping['territorialArea1'] : null,
-                'shipping_territorial_area_2_id_116'    => isset($shipping['territorialArea2'])? $shipping['territorialArea2'] : null,
-                'shipping_territorial_area_3_id_116'    => isset($shipping['territorialArea3'])? $shipping['territorialArea3'] : null,
-                'shipping_cp_116'                       => isset($shipping['cp'])? $shipping['cp'] : null,
-                'shipping_locality_116'                 => isset($shipping['locality'])? ucfirst($shipping['locality']) : null,
-                'shipping_address_116'                  => isset($shipping['address'])? $shipping['address'] : null,
-                'shipping_comments_116'                 => isset($shipping['comments'])? $shipping['comments'] : null,
-                'shipping_latitude_116'                 => isset($shipping['latitude'])? $shipping['latitude'] : null,
-                'shipping_longitude_116'                => isset($shipping['longitude'])? $shipping['longitude'] : null,
+            $orderAux       = array_merge($orderAux, [
+                'shipping_company_116'                  => isset($shippingData['company'])? $shippingData['company'] : null,
+                'shipping_name_116'                     => isset($shippingData['name'])? ucfirst($shippingData['name']) : null,
+                'shipping_surname_116'                  => isset($shippingData['surname'])? ucfirst($shippingData['surname']) : null,
+                'shipping_email_116'                    => isset($shippingData['email'])? strtolower($shippingData['email']) : null,
+                'shipping_phone_116'                    => isset($shippingData['phone'])? $shippingData['phone'] : null,
+                'shipping_mobile_116'                   => isset($shippingData['mobile'])? $shippingData['mobile'] : null,
+                'shipping_country_id_116'               => isset($shippingData['country'])? $shippingData['country'] : null,
+                'shipping_territorial_area_1_id_116'    => isset($shippingData['territorialArea1'])? $shippingData['territorialArea1'] : null,
+                'shipping_territorial_area_2_id_116'    => isset($shippingData['territorialArea2'])? $shippingData['territorialArea2'] : null,
+                'shipping_territorial_area_3_id_116'    => isset($shippingData['territorialArea3'])? $shippingData['territorialArea3'] : null,
+                'shipping_cp_116'                       => isset($shippingData['cp'])? $shippingData['cp'] : null,
+                'shipping_locality_116'                 => isset($shippingData['locality'])? ucfirst($shippingData['locality']) : null,
+                'shipping_address_116'                  => isset($shippingData['address'])? $shippingData['address'] : null,
+                'shipping_comments_116'                 => isset($shippingData['comments'])? $shippingData['comments'] : null,
+                'shipping_latitude_116'                 => isset($shippingData['latitude'])? $shippingData['latitude'] : null,
+                'shipping_longitude_116'                => isset($shippingData['longitude'])? $shippingData['longitude'] : null,
             ]);
         }
 
@@ -450,7 +451,7 @@ class MarketFrontendController extends Controller
                 'tax_amount_117'                            => $item->taxAmount,
 
                 // gift fields
-                // to set gift, create array in options with gift key, and keys: from, to, message
+                // to set gift, create array in options Shopping Cart, with gift key, and keys: from, to, message
                 'gift_117'                                  => $item->options->gift != null? true : false,
                 'gift_from_117'                             => isset($item->options->gift['from'])? $item->options->gift['from'] : null,
                 'gift_to_117'                               => isset($item->options->gift['to'])? $item->options->gift['to'] : null,
@@ -539,6 +540,8 @@ class MarketFrontendController extends Controller
         // destroy shopping cart
         CartProvider::instance()->destroy();
 
+
+        dd('OK, pedido registrado');
 
         // Redsys Payment
         if($request->input('paymentMethod') === '1')

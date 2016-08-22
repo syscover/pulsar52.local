@@ -181,37 +181,37 @@
                 <h3>Shipping: {{ CartProvider::instance()->getShippingAmount() }} €</h3>
                 <div class="form-group">
                     <label>Name</label><br>
-                    {{ $shipping['name'] }}
+                    {{ $shippingData['name'] }}
                 </div>
                 <div class="form-group">
                     <label>Surname</label><br>
-                    {{ $shipping['surname'] }}
+                    {{ $shippingData['surname'] }}
                 </div>
 
                 <div class="form-group">
                     <label>Country</label><br>
-                    {{ $shipping['country'] }}
+                    {{ $shippingData['country'] }}
                 </div>
                 <div class="form-group">
                     <label>??</label><br>
-                    {{ $shipping['territorialArea1'] }}
+                    {{ $shippingData['territorialArea1'] }}
                 </div>
                 <div class="form-group">
                     <label>??</label><br>
-                    {{ $shipping['territorialArea2'] }}
+                    {{ $shippingData['territorialArea2'] }}
                 </div>
                 <div class="form-group">
                     <label>??</label><br>
-                    {{ $shipping['territorialArea3'] }}
+                    {{ $shippingData['territorialArea3'] }}
                 </div>
 
                 <div class="form-group">
                     <label for="cp">CP</label><br>
-                    {{ $shipping['cp'] }}
+                    {{ $shippingData['cp'] }}
                 </div>
                 <div class="form-group">
                     <label for="address">Address</label><br>
-                    {{ $shipping['address'] }}
+                    {{ $shippingData['address'] }}
                 </div>
             @endif
 
