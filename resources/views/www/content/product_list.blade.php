@@ -28,9 +28,9 @@
                     <small>{{ trans($taxRule->translation_104) }} {{ $taxRule->tax_rate_103 }}%</small>
                 @endforeach
                 <br><br>
-                <a href="{{ route('product-'. user_lang(), ['category' => $product->mappedCategory->slug_110, 'slug' => $product->slug_112]) }}">Ver producto</a>
+                <a href="{{ route('product-'. user_lang(), ['category' => $product->mappedCategory->slug_110, 'slug' => $product->slug_112]) }}">{{ trans('www.show_product') }}</a>
                 <br>
-                <a href="{{ route('postShoppingCart-' . user_lang(), ['slug' => $product->slug_112]) }}">Añadir a carro de compra</a>
+                <a href="{{ route('postShoppingCart-' . user_lang(), ['slug' => $product->slug_112]) }}">{{ trans('www.add_to_shopping_cart') }}</a>
                 <hr>
             </div>
         </div>

@@ -49,24 +49,24 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="{{ route('home-' . user_lang()) }}">Home</a>
+                        <a href="{{ route('home-' . user_lang()) }}">{{ trans('www.home') }}</a>
                     </li>
                     <li>
-                        <a href="{{ route('productList-' . user_lang()) }}">Products</a>
+                        <a href="{{ route('productList-' . user_lang()) }}">{{ trans_choice('www.product', 2) }}</a>
                     </li>
                     <li>
-                        <a href="{{ route('getShoppingCart-' . user_lang()) }}">Shopping cart</a>
+                        <a href="{{ route('getShoppingCart-' . user_lang()) }}">{{ trans('www.shopping_cart') }}</a>
                     </li>
                     <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Account</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ trans('www.my_account') }}</a>
                         <ul class="dropdown-menu">
                             @if(auth('crm')->check())
-                                <li><a href="{{ route('account-' . user_lang()) }}">My Account</a></li>
+                                <li><a href="{{ route('account-' . user_lang()) }}">{{ trans('www.my_account') }}</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="{{ route('logout-' . user_lang()) }}">Logout</a></li>
+                                <li><a href="{{ route('logout-' . user_lang()) }}">{{ trans('www.logout') }}</a></li>
                             @endif
                             @if(auth('crm')->guest())
-                                <li><a href="{{ route('getLogin-' . user_lang()) }}">Login</a></li>
+                                <li><a href="{{ route('getLogin-' . user_lang()) }}">{{ trans('www.login') }}</a></li>
                             @endif
                         </ul>
                     </li>
@@ -74,7 +74,14 @@
                         <a href="{{ route('facturaDirectaClients-' . user_lang()) }}">FD</a>
                     </li>
                     <li>
-                        <a href="#">Contact</a>
+                        <a href="#">{{ trans('www.contact') }}</a>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ trans_choice('www.language', 1) }}</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ route(get_lang_route_name('es')) }}">{{ trans('www.spanish') }}</a></li>
+                            <li><a href="{{ route(get_lang_route_name('en')) }}">{{ trans('www.english') }}</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>

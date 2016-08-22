@@ -43,6 +43,6 @@
 
     <br><br>
     <a href="{{ route('postShoppingCart-' . user_lang(), ['slug' => $product->slug_112]) }}">
-        Añadir a carro de compra
+        {{ trans('www.add_to_shopping_cart') }}
     </a>
 @stop

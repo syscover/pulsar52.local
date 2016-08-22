@@ -25,7 +25,7 @@
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="remember" value="1"> Remenber
+                        <input type="checkbox" name="remember" value="1"> {{ trans('www.remenber') }}
                     </label>
                 </div>
                 @if (count($errors) > 0)
@@ -37,16 +37,16 @@
                         </ul>
                     </div>
                 @endif
-                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                <button type="submit" class="btn btn-primary btn-lg">{{ trans('www.login') }}</button>
             </form>
             <br>
-            <a href="#">Forget your password?</a>
+            <a href="#">{{ trans('www.forget_password') }}</a>
             <br><br>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <a href="{{ route('getSingIn-' . user_lang()) }}" class="btn btn-primary btn-lg">Sign in</a>
+            <a href="{{ route('getSingIn-' . user_lang()) }}" class="btn btn-primary btn-lg">{{ trans('www.sign_in') }}</a>
         </div>
     </div>
 @stop
