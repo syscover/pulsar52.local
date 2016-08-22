@@ -25,6 +25,8 @@ use Syscover\ShoppingCart\Facades\CartProvider;
  * 
  */
 
+
+
 class MarketFrontendController extends Controller
 {
     /**
