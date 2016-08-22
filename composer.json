@@ -1,16 +1,12 @@
 {
     "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
+    "description": "pulsar.local implementation",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.2.*",
-        "syscover/nav-tools": "~1.0",
-        "syscover/pulsar": "~1.0",
-        "syscover/market": "~1.0",
-        "syscover/comunik": "~1.0"
+        "laravel/framework": "5.2.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -62,3 +62,8 @@ Syscover\Forms\FormsServiceProvider::class,
 Syscover\ShoppingCart\ShoppingCartServiceProvider::class,
 Syscover\FacturaDirecta\FacturaDirectaServiceProvider::class,
 ```
+
+After execute on console:
+```
+composer update
+```
