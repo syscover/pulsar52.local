@@ -3,7 +3,11 @@
 return [
 
     'add_to_shopping_cart'  => 'Add to shopping cart',
+    'apply'                 => 'Apply',
+    'checkout'              => 'Checkout',
     'contact'               => 'Contact',
+    'continue_shopping'     => 'Continue shopping',
+    'coupon_code'           => 'Coupon code',
     'customs'               => 'Customs TAX',
     'english'               => 'English',
     'forget_password'       => 'Forget your password?',
@@ -13,6 +17,7 @@ return [
     'login'                 => 'Login',
     'logout'                => 'Logout',
     'my_account'            => 'My Account',
+    'price'                 => 'Price|Prices',
     'product'               => 'Product|Products',
     'reduced_iva'           => 'Reduced IVA',
     'remenber'              => 'Remenber',

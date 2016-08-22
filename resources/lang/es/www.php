@@ -3,8 +3,13 @@
 return [
 
     'add_to_shopping_cart'  => 'Añadir al carro de compra',
+    'apply'                 => 'Aplicar',
+    'checkout'              => 'Hacer pedido',
     'contact'               => 'Contacto',
+    'continue_shopping'     => 'Continuar comprando',
+    'coupon_code'           => 'Código de cupón',
     'customs'               => 'Aduanas',
+    'discount'              => 'Descuento|Descuentos',
     'english'               => 'Inglés',
     'forget_password'       => '¿Olvidó su contraseña?',
     'home'                  => 'Inicio',
@@ -13,6 +18,7 @@ return [
     'login'                 => 'Acceder',
     'logout'                => 'Cerrar sesión',
     'my_account'            => 'Mi cuenta',
+    'price'                 => 'Precio|Precios',
     'product'               => 'Producto|Productos',
     'reduced_iva'           => 'IVA Reducido',
     'remenber'              => 'Recordar',

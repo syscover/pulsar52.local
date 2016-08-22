@@ -63,15 +63,15 @@
 @stop
 
 @section('content')
-    <h1>Shopping cart</h1>
+    <h1>{{ trans('www.shopping_cart') }}</h1>
 
     <!-- heads -->
     <div class="row">
         <div class="col-md-3">
-            <h5>Product</h5>
+            <h5>{{ trans_choice('www.product', 2) }}</h5>
         </div>
         <div class="col-md-1">
-            <h5>Price</h5>
+            <h5>{{ trans_choice('www.price', 2) }}</h5>
         </div>
         <div class="col-md-1">
             <h5>Qty</h5>
@@ -80,7 +80,7 @@
             <h5>Subtotal</h5>
         </div>
         <div class="col-md-1">
-            <h5>Descuento</h5>
+            <h5>{{ trans_choice('www.discount', 2) }}</h5>
         </div>
         <div class="col-md-1">
             <h5>Sub + descuentos</h5>
@@ -234,10 +234,10 @@
             <div class="row">
                 <form>
                     <div class="col-md-7">
-                        <input class="form-control" type="text" name="couponCode" placeholder="Coupon code">
+                        <input class="form-control" type="text" name="couponCode" placeholder="{{ trans('www.coupon_code') }}">
                     </div>
                     <div class="col-md-5">
-                        <a class="btn btn-primary" id="couponCodeBt" href="#">Apply</a>
+                        <a class="btn btn-primary" id="couponCodeBt" href="#">{{ trans('www.apply') }}</a>
                     </div>
                 </form>
             </div>
@@ -246,14 +246,14 @@
     <div class="row">
         <br>
         <div class="col-md-12">
-            <a class="btn btn-default" href="{{ route('productList-' . user_lang()) }}">Continue shopping</a>
+            <a class="btn btn-default" href="{{ route('productList-' . user_lang()) }}">{{ trans('www.continue_shopping') }}</a>
         </div>
     </div>
     @if($cartItems->count() > 0)
     <div class="row">
         <br>
         <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ route('getCheckout01-' . user_lang()) }}">Checkout</a>
+            <a class="btn btn-primary" href="{{ route('getCheckout01-' . user_lang()) }}">{{ trans('www.checkout') }}</a>
         </div>
     </div>
     @endif
