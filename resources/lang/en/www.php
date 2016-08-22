@@ -9,6 +9,8 @@ return [
     'continue_shopping'     => 'Continue shopping',
     'coupon_code'           => 'Coupon code',
     'customs'               => 'Customs TAX',
+    'delete'                => 'Delete',
+    'discount'              => 'Discount|Discounts',
     'english'               => 'English',
     'forget_password'       => 'Forget your password?',
     'home'                  => 'Home',
@@ -25,5 +27,6 @@ return [
     'show_product'          => 'Show product',
     'sign_in'               => 'Sign in',
     'spanish'               => 'Spanish',
+    'tax'                   => 'Impuesto|Impuestos',
 
 ];

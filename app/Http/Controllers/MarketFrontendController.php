@@ -129,6 +129,10 @@ class MarketFrontendController extends Controller
             ->where('active_111', true)
             ->first();
 
+        // check that product exist
+        if($response['product'] == null)
+            return view('errors.common', ['message' => 'Error! Product not exist']);
+
         // get atachments to product
         $response['attachments'] = Attachment::builder()
             ->where('lang_id', user_lang())
@@ -137,7 +141,6 @@ class MarketFrontendController extends Controller
             ->where('family_id', config('www.attachmentsFamily.productSheet'))
             ->orderBy('sorting', 'asc')
             ->get();
-
 
         return view('www.content.product', $response);
     }
@@ -186,7 +189,7 @@ class MarketFrontendController extends Controller
     public function getCheckout01()
     {
         // check if cart has shipping
-        if(CartProvider::instance()->hasShipping() === true)
+        if(CartProvider::instance()->hasItemTransportable() === true)
         {
             $response['cartItems']  = CartProvider::instance()->getCartItems();
             $response['customer']   = auth('crm')->user();

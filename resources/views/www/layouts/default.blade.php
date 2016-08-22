@@ -58,6 +58,12 @@
                         <a href="{{ route('getShoppingCart-' . user_lang()) }}">{{ trans('www.shopping_cart') }}</a>
                     </li>
                     <li>
+                        <a href="{{ route('facturaDirectaClients-' . user_lang()) }}">FD</a>
+                    </li>
+                    <li>
+                        <a href="#">{{ trans('www.contact') }}</a>
+                    </li>
+                    <li>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ trans('www.my_account') }}</a>
                         <ul class="dropdown-menu">
                             @if(auth('crm')->check())
@@ -71,16 +77,10 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="{{ route('facturaDirectaClients-' . user_lang()) }}">FD</a>
-                    </li>
-                    <li>
-                        <a href="#">{{ trans('www.contact') }}</a>
-                    </li>
-                    <li>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ trans_choice('www.language', 1) }}</a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ route(get_lang_route_name('es')) }}">{{ trans('www.spanish') }}</a></li>
-                            <li><a href="{{ route(get_lang_route_name('en')) }}">{{ trans('www.english') }}</a></li>
+                            <li><a href="{{ get_lang_route('es') }}">{{ trans('www.spanish') }}</a></li>
+                            <li><a href="{{ get_lang_route('en') }}">{{ trans('www.english') }}</a></li>
                         </ul>
                     </li>
                 </ul>

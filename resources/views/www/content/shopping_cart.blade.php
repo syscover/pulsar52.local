@@ -83,19 +83,19 @@
             <h5>{{ trans_choice('www.discount', 2) }}</h5>
         </div>
         <div class="col-md-1">
-            <h5>Sub + descuentos</h5>
+            <h5>Sub + {{ trans_choice('www.discount', 2) }}</h5>
         </div>
         <div class="col-md-1">
-            <h5>Tax %</h5>
+            <h5>{{ trans_choice('www.tax', 2) }} %</h5>
         </div>
         <div class="col-md-1">
-            <h5>Tax €</h5>
+            <h5>{{ trans_choice('www.tax', 2) }} €</h5>
         </div>
         <div class="col-md-1">
             <h5>Total</h5>
         </div>
         <div class="col-md-1">
-            <h5>Delete</h5>
+            <h5>{{ trans('www.delete') }}</h5>
         </div>
     </div>
     <!-- /heads -->

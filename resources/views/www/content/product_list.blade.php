@@ -6,7 +6,7 @@
 @stop
 
 @section('content')
-    <?php $i=0; ?>
+    <h1>{{ trans_choice('www.product', 2) }}</h1>
     @foreach($products as $product)
         <div class="row">
             <div class="col-md-12">

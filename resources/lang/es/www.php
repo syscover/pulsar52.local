@@ -9,6 +9,7 @@ return [
     'continue_shopping'     => 'Continuar comprando',
     'coupon_code'           => 'Código de cupón',
     'customs'               => 'Aduanas',
+    'delete'                => 'Borrar',
     'discount'              => 'Descuento|Descuentos',
     'english'               => 'Inglés',
     'forget_password'       => '¿Olvidó su contraseña?',
@@ -26,5 +27,6 @@ return [
     'show_product'          => 'Ver producto',
     'sign_in'               => 'Registrarse',
     'spanish'               => 'Español',
+    'tax'                   => 'Impuesto|Impuestos',
 
 ];
