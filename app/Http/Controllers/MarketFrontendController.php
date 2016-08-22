@@ -389,11 +389,11 @@ class MarketFrontendController extends Controller
             'invoiced_116'                      => false,
 
             // check if there are to do a delivery
-            'has_shipping_116'                  => CartProvider::instance()->hasShipping()
+            'has_shipping_116'                  => CartProvider::instance()->hasItemTransportable()
         ];
 
         // if cart has shipping, set shipping in order
-        if(CartProvider::instance()->hasShipping())
+        if(CartProvider::instance()->hasItemTransportable())
         {
             $shipping = CartProvider::instance()->getShipping();
 

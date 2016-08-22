@@ -156,7 +156,7 @@
                     <h4>{{ CartProvider::instance()->getTaxAmount() }} €</h4>
                 </div>
             </div>
-            @if(CartProvider::instance()->hasShipping())
+            @if(CartProvider::instance()->hasItemTransportable())
                 <div class="row">
                     <div class="col-md-7">
                         <h4>Coste de envío:</h4>
@@ -177,7 +177,7 @@
         </div>
         <div class="col-md-6">
             <!-- check if cart has shipping -->
-            @if(CartProvider::instance()->hasShipping())
+            @if(CartProvider::instance()->hasItemTransportable())
                 <h3>Shipping: {{ CartProvider::instance()->getShippingAmount() }} €</h3>
                 <div class="form-group">
                     <label>Name</label><br>
