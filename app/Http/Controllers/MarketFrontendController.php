@@ -298,6 +298,11 @@ class MarketFrontendController extends Controller
      *
      * @param Request $request
      */
+
+    /**
+     * @param Request $request
+     * @return $this|\Illuminate\Http\JsonResponse
+     */
     public function postCheckout03(Request $request)
     {
         // check that there are items in shopping cart
@@ -517,7 +522,7 @@ class MarketFrontendController extends Controller
                     'maximum_discount_amount_126'       => $priceRule->maximum_discount_amount_120,
 
                     // discount amount of this rule
-                    'discount_percentage_amount_126'    => $priceRule->discountAmount,
+                    'discount_amount_126'               => $cartPriceRule->discountAmount,
 
                     // check if apply discount to shipping amount
                     'apply_shipping_amount_126'         => $priceRule->apply_shipping_amount_120,
