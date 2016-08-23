@@ -497,8 +497,7 @@ class MarketFrontendController extends Controller
                     'has_coupon_126'                    => $priceRule->has_coupon_120,
                     'coupon_code_126'                   => $priceRule->coupon_code_120,
                     'rule_id_126'                       => $priceRule->id_120,
-
-                    //'customer_discount_id_126'        => null,
+                    
                     'name_text_id_126'                  => $priceRule->name_text_id_120,
                     'description_text_id_126'           => $priceRule->description_text_id_120,
                     'name_text_value_126'               => $priceRule->name_text_value,
