@@ -25,7 +25,7 @@
                 @endif
                 @foreach($product->taxRules as $taxRule)
                     <br>
-                    <small>{{ trans($taxRule->translation_104) }} {{ $taxRule->tax_rate_103 }}%</small>
+                    <small>{{ trans($taxRule->translation_104) }} {{ $taxRule->getTaxRate() }}%</small>
                 @endforeach
                 <br><br>
                 <a href="{{ route('product-'. user_lang(), ['category' => $product->mappedCategory->slug_110, 'slug' => $product->slug_112]) }}">{{ trans('www.show_product') }}</a>
