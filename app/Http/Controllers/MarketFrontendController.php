@@ -546,64 +546,197 @@ class MarketFrontendController extends Controller
 
         dd('OK, pedido registrado');
 
-        // Redsys Payment
+        // Redsys Payment (debit and credit cart )
         if($request->input('paymentMethod') === '1')
         {
+            try
+            {
+                $redsys = new Tpv();
+                $redsys->setAmount($order->total_116);
+                $redsys->setOrder(config('market.orderIdPrefix') . $order->id_116);
+                $redsys->setMerchantcode(config('market.redsysMode') == 'live' ? config('market.redsysLiveMerchantCode') : config('market.redsysTestMerchantCode'));
+                $redsys->setCurrency('978');
+                $redsys->setTransactiontype('0');
+                $redsys->setTerminal('1');
 
+                // resolver las peticiones contra https
+                $redsys->setNotification(route('redsysPaymentResponse'));
+                $redsys->setUrlOk(route('redsysPaymentResponseSuccessful'));
+                $redsys->setUrlKo(route('redsysPaymentResponseNook'));
+                $redsys->setVersion('HMAC_SHA256_V1');
+                $redsys->setTradeName(config('market.redsysMode') == 'live'? config('market.redsysLiveMerchantName') : config('market.redsysTestMerchantName'));
+                $redsys->setTitular($order->customer_name_116 . ' ' . $order->customer_surname_116);
+                $redsys->setProductDescription(trans('web.redsysProductDescription'));
+                $redsys->setEnviroment(config('market.redsysMode'));
+
+                // signature SHA256
+                $signature = $redsys->generateMerchantSignature(config('market.redsysMode') == 'live'? config('market.redsysLiveKey') : config('market.redsysTestKey'));
+                $redsys->setMerchantSignature($signature);
+
+                Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_tpv'));
+
+                return response()->json([
+                    'status'    => 'success',
+                    'redsys'    => $redsys->createForm()
+                ]);
+            }
+            catch(\Exception $e)
+            {
+                Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_tpv_error', ['error' => $e->getMessage()]));
+
+                echo $e->getMessage();
+            }
         }
+
         // PayPal Payment
         elseif($request->input('paymentMethod') === '2')
         {
-            $this->throwPayPalPaymentMethod($order);
+            Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_paypal'));
+
+            return response()->json([
+                'status'        => 'success',
+                'order'         => $order,
+                'payPal'        => PayPalLibrary::createForm($order->id_116)
+            ]);
         }
     }
 
-    private function throwRedsysPaymentMethod(Order $order)
+    /**
+     * Function is call from redsys server
+     *
+     * @param   Request $request
+     * @return  \Illuminate\Http\JsonResponse
+     * @throws  \Exception
+     */
+    public function redsysPaymentResponse(Request $request)
     {
         try
         {
-            $redsys = new Tpv();
-            $redsys->setAmount($order->total_116);
-            $redsys->setOrder(config('market.orderIdPrefix') . $order->id_116);
-            $redsys->setMerchantcode(config('market.redsysMode') == 'live' ? config('market.redsysLiveMerchantCode') : config('market.redsysTestMerchantCode'));
-            $redsys->setCurrency('978');
-            $redsys->setTransactiontype('0');
-            $redsys->setTerminal('1');
+            // visit, https://github.com/ssheduardo/sermepa
+            $redsys     = new Tpv();
+            $parameters = $redsys->getMerchantParameters($request->input('Ds_MerchantParameters'));
+            $DsResponse = $parameters['Ds_Response'];
+            $DsResponse += 0;
 
-            $redsys->setUrlOk(route('redsysPaymentResponseOk'));
-            $redsys->setUrlKo(route('redsysPaymentResponseNook'));
-            $redsys->setVersion('HMAC_SHA256_V1');
-            $redsys->setTradeName(config('market.redsysMode') == 'live'? config('market.redsysLiveMerchantName') : config('market.redsysTestMerchantName'));
-            $redsys->setTitular($order->customer_name_116 . ' ' . $order->customer_surname_116);
-            $redsys->setProductDescription(trans('web.redsysProductDescription'));
-            $redsys->setEnviroment(config('market.redsysMode'));
+            if($redsys->check(config('market.redsysMode') == 'live'? config('market.redsysLiveKey') : config('market.redsysTestKey'), $request->all()) && $DsResponse <= 99)
+            {
+                $nOrder = str_replace(config('market.orderIdPrefix'), '', $parameters['Ds_Order']);
 
-            // signature SHA256
-            $signature = $redsys->generateMerchantSignature(config('market.redsysMode') == 'live'? config('market.redsysLiveKey') : config('market.redsysTestKey'));
-            $redsys->setMerchantSignature($signature);
+                // get order
+                $order = Order::builder()
+                    ->where('id_116', $nOrder)
+                    ->first();
 
-            Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_tpv'));
+                // change order status to next status, depending on your method of payment
+                Order::where('id_116', $nOrder)->update([
+                    // get next status
+                    'status_id_116' => $order->order_status_successful_id_115
+                ]);
 
-            return response()->json([
-                'status'    => 'success',
-                'redsys'    => $redsys->createForm()
-            ]);
+                // config here send email
+
+                Order::setOrderLog($nOrder, trans('market::pulsar.message_tpv_payment_successful'));
+
+                return response()->json([
+                    'status'    => 'success'
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'status'    => 'error',
+                    'error'     => $DsResponse
+                ]);
+            }
         }
-        catch(Exception $e){
+        catch(\Exception $e)
+        {
             echo $e->getMessage();
         }
-        return $form;
-
     }
 
-    private function throwPayPalPaymentMethod(Order $order)
+    /**
+     * Function calling when payment process is completed and customer click over button, return shop
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function redsysPaymentResponseSuccessful(Request $request)
     {
-        Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_paypal'));
+        try {
+            $redsys = new Tpv();
+            $parameters = $redsys->getMerchantParameters($request->input("Ds_MerchantParameters"));
+            $DsResponse = $parameters["Ds_Response"];
+            $DsResponse += 0;
 
-        return response()->json([
-            'status'        => 'success',
-            'order'         => $order,
-            'payPal'        => PayPalLibrary::createForm($order->id_116)
-        ]);
+            if ($redsys->check(config('market.redsysMode') == 'live' ? config('market.redsysLiveKey') : config('market.redsysTestKey'), $request->all()) && $DsResponse <= 99)
+            {
+                // get order ID
+                $orderId = str_replace(config('market.orderIdPrefix'), '', $parameters['Ds_Order']);
+
+                return redirect()->route('clubViewOrder-' . user_lang(), ['order' => $orderId]);
+            }
+            else
+            {
+                return redirect()->route('error-' . user_lang());
+            }
+        }
+        catch (\Exception $e)
+        {
+            echo $e->getMessage();
+        }
+    }
+
+    /**
+     * Function calling when return to shop with process payment failure
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function redsysPaymentResponseFailure(Request $request)
+    {
+        try
+        {
+            $redsys     = new Tpv();
+            $parameters = $redsys->getMerchantParameters($request->input("Ds_MerchantParameters"));
+
+            $nOrder     = str_replace(config('market.orderIdPrefix'), '', $parameters['Ds_Order']);
+
+            // set log error in order
+            Order::setOrderLog($nOrder, trans('market::pulsar.message_tpv_payment_error', ['error' => $parameters['Ds_Response']]));
+
+            return redirect()->route('error-' . user_lang());
+        }
+        catch(\Exception $e)
+        {
+            echo $e->getMessage();
+        }
+    }
+
+    /**
+     * Function calling from PayPal when payment is successful
+     *
+     * @param   Request $request
+     * @return  \Illuminate\Http\RedirectResponse
+     */
+    public function payPalPaymentResponseSuccessful(Request $request)
+    {
+        Order::setOrderLog($request->input('order'), trans('market::pulsar.message_paypal_payment_successful'));
+
+        return redirect()->route('getOrder-' . user_lang(), ['id' => $request->input('order')]);
+    }
+
+    /**
+     * Function calling from PayPal when payment is failure
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function payPalPaymentResponseFailure(Request $request)
+    {
+        Order::setOrderLog($request->input('order'), trans('market::pulsar.message_paypal_payment_failure'));
+
+        return redirect()->route('getOrder-' . user_lang(), ['id' => $request->input('order')]);
     }
 }
