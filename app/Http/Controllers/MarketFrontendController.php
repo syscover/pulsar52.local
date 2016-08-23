@@ -57,7 +57,7 @@ class MarketFrontendController extends Controller
         */
 
 
-        // Atention!, if there are only one category by product, you can use slug category for url product
+        // Atention! if there are only one category by product, you can use slug category for url product
         $productsCategories = ProductsCategories::builder(user_lang())
             ->whereIn('product_id_113', $response['products']->pluck('id_111'))
             ->get();
@@ -90,9 +90,9 @@ class MarketFrontendController extends Controller
         // We add properties to products, including each category at your product
         $response['products']->transform(function ($product, $key) use ($productsCategories, $taxRules) {
             // add category to create slug
-            $product->mappedCategory    = $productsCategories->where('product_id_113', $product->id_111)->first();
+            $product->mappedCategory = $productsCategories->where('product_id_113', $product->id_111)->first();
             // add tax rules for this product
-            $product->taxRules          = $taxRules->where('product_class_tax_id_107', $product->product_class_tax_id_111);
+            $product->taxRules = $taxRules->where('product_class_tax_id_107', $product->product_class_tax_id_111);
             return $product;
         });
 
