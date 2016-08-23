@@ -426,7 +426,6 @@ class MarketFrontendController extends Controller
         // Create order in database
         $order = Order::create($orderAux);
 
-
         // Create items from shopping cart
         $items = [];
         foreach (CartProvider::instance()->getCartItems() as $item)
@@ -497,7 +496,7 @@ class MarketFrontendController extends Controller
                     'has_coupon_126'                    => $priceRule->has_coupon_120,
                     'coupon_code_126'                   => $priceRule->coupon_code_120,
                     'rule_id_126'                       => $priceRule->id_120,
-                    
+
                     'name_text_id_126'                  => $priceRule->name_text_id_120,
                     'description_text_id_126'           => $priceRule->description_text_id_120,
                     'name_text_value_126'               => $priceRule->name_text_value,
@@ -566,7 +565,7 @@ class MarketFrontendController extends Controller
             $redsys = new Tpv();
             $redsys->setAmount($order->total_116);
             $redsys->setOrder(config('market.orderIdPrefix') . $order->id_116);
-            $redsys->setMerchantcode(config('market.redSysEnviroment') == 'live' ? config('market.redSysLiveMerchantCode') : config('market.redSysTestMerchantCode'));
+            $redsys->setMerchantcode(config('market.redsysMode') == 'live' ? config('market.redsysLiveMerchantCode') : config('market.redsysTestMerchantCode'));
             $redsys->setCurrency('978');
             $redsys->setTransactiontype('0');
             $redsys->setTerminal('1');
@@ -574,13 +573,13 @@ class MarketFrontendController extends Controller
             $redsys->setUrlOk(route('redsysPaymentResponseOk'));
             $redsys->setUrlKo(route('redsysPaymentResponseNook'));
             $redsys->setVersion('HMAC_SHA256_V1');
-            $redsys->setTradeName(config('market.redSysEnviroment') == 'live'? config('market.redSysLiveMerchantName') : config('market.redSysTestMerchantName'));
+            $redsys->setTradeName(config('market.redsysMode') == 'live'? config('market.redsysLiveMerchantName') : config('market.redsysTestMerchantName'));
             $redsys->setTitular($order->customer_name_116 . ' ' . $order->customer_surname_116);
             $redsys->setProductDescription(trans('web.redsysProductDescription'));
-            $redsys->setEnviroment(config('market.redSysEnviroment'));
+            $redsys->setEnviroment(config('market.redsysMode'));
 
             // signature SHA256
-            $signature = $redsys->generateMerchantSignature(config('market.redSysEnviroment') == 'live'? config('market.redSysLiveKey') : config('market.redSysTestKey'));
+            $signature = $redsys->generateMerchantSignature(config('market.redsysMode') == 'live'? config('market.redsysLiveKey') : config('market.redsysTestKey'));
             $redsys->setMerchantSignature($signature);
 
             Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_tpv'));
