@@ -437,6 +437,8 @@ class MarketFrontendController extends Controller
                 'name_117'                                  => $item->name,
                 'description_117'                           => $item->options->product->description_112,
                 'data_117'                                  => json_encode(['product' => $item->options->product]),
+
+                // amounts
                 'price_117'                                 => $item->price,        // unit price without tax
                 'quantity_117'                              => $item->quantity,     // number of units
                 'subtotal_117'                              => $item->subtotal,     // subtotal without tax
@@ -450,9 +452,15 @@ class MarketFrontendController extends Controller
                 'discount_total_fixed_amount_117'           => $item->discountTotalFixedAmount,
                 'discount_amount_117'                       => $item->discountAmount,
 
+                // subtotal with discounts
+                'subtotal_with_discounts_117'               => $item->subtotalWithDiscounts,      // subtotal without tax and with discounts
+
                 // taxes
                 'tax_rules_117'                             => json_encode($item->taxRules->values()),
                 'tax_amount_117'                            => $item->taxAmount,
+
+                // total
+                'total_117'                                 => $item->total,        // total with tax and discounts
 
                 // gift fields
                 // to set gift, create array in options Shopping Cart, with gift key, and keys: from, to, message

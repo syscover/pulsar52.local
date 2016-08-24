@@ -232,18 +232,18 @@
             </div>
             <div class="row">
                 <div class="col-md-7">
-                    <h4>Total:</h4>
-                </div>
-                <div class="col-md-5">
-                    <h4>{{ CartProvider::instance()->getTotal() }} €</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-7">
                     <h4>Total Without shipping and without discount:</h4>
                 </div>
                 <div class="col-md-5">
                     <h4>{{ CartProvider::instance()->getCartItemsTotalWithoutDiscount() }} €</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-7">
+                    <h4>Total:</h4>
+                </div>
+                <div class="col-md-5">
+                    <h4>{{ CartProvider::instance()->getTotal() }} €</h4>
                 </div>
             </div>
             <div class="row">

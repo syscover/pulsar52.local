@@ -155,6 +155,7 @@
                     <h4>{{ CartProvider::instance()->getTaxAmount() }} €</h4>
                 </div>
             </div>
+            <hr>
             <div class="row">
                 <div class="col-md-7">
                     <h4>Coste de envío:</h4>

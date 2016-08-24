@@ -156,6 +156,7 @@
                     <h4>{{ CartProvider::instance()->getTaxAmount() }} €</h4>
                 </div>
             </div>
+            <hr>
             @if(CartProvider::instance()->hasItemTransportable())
                 <div class="row">
                     <div class="col-md-7">
