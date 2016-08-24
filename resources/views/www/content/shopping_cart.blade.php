@@ -222,6 +222,14 @@
                     {{--<h3>-9999€</h3>--}}
                 {{--</div>--}}
             {{--</div>--}}
+            <div class="row">
+                <div class="col-md-7">
+                    <h4>Total Without shipping:</h4>
+                </div>
+                <div class="col-md-5">
+                    <h4>{{ CartProvider::instance()->getCartItemsTotalAmount() }} €</h4>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-md-7">
