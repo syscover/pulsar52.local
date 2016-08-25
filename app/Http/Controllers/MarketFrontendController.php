@@ -358,18 +358,19 @@ class MarketFrontendController extends Controller
             'payment_method_id_116'             => $request->input('paymentMethod'),
             'comments_116'                      => null,
 
+            // set amounts to order
+            'subtotal_116'                      => CartProvider::instance()->subtotal,                                                              // amount without tax and without shipping
+            'discount_amount_116'               => CartProvider::instance()->discountAmount,                                                        // total amount to discount, fixed plus percentage discounts
+            'subtotal_with_discounts_116'       => CartProvider::instance()->subtotalWithDiscounts,                                                 // subtotal with discounts applied
+            'tax_amount_116'                    => CartProvider::instance()->taxAmount,                                                             // total tax amount
+            'shipping_amount_116'               => CartProvider::instance()->hasFreeShipping()? 0 :  CartProvider::instance()->shippingAmount,      // shipping amount
+            'total_116'                         => CartProvider::instance()->total,                                                                 // subtotal and shipping amount with tax
+
             // set gift data to all order
             'has_gift_116'                      => false,
             'gift_from_116'                     => null,
             'gift_to_116'                       => null,
             'gift_message_116'                  => null,
-
-            // set amounts to order
-            'subtotal_116'                      => CartProvider::instance()->subtotal,
-            'shipping_116'                      => CartProvider::instance()->hasFreeShipping()? 0 :  CartProvider::instance()->shippingAmount,
-            'total_discount_amount_116'         => CartProvider::instance()->discountAmount,
-            'tax_amount_116'                    => CartProvider::instance()->getTaxAmount(),    // Total tax amount
-            'total_116'                         => CartProvider::instance()->total,
 
             // customer data
             'customer_id_116'                   => $customer->id_301,
@@ -464,7 +465,7 @@ class MarketFrontendController extends Controller
 
                 // gift fields
                 // to set gift, create array in options Shopping Cart, with gift key, and keys: from, to, message
-                'gift_117'                                  => $item->options->gift != null? true : false,
+                'has_gift_117'                              => $item->options->gift != null? true : false,
                 'gift_from_117'                             => isset($item->options->gift['from'])? $item->options->gift['from'] : null,
                 'gift_to_117'                               => isset($item->options->gift['to'])? $item->options->gift['to'] : null,
                 'gift_message_117'                          => isset($item->options->gift['message'])? $item->options->gift['message'] : null
