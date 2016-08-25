@@ -351,49 +351,50 @@ class MarketFrontendController extends Controller
         // create data order
         $orderDate = date('U');
         $orderAux = [
-            'date_116'                          => $orderDate,
-            'date_text_116'				        => date(config('pulsar.datePattern') . ' H:i', $orderDate),
-            'status_id_116'                     => 1, // Outstanding
-            'ip_116'                            => $request->ip(),  // customer IP
-            'payment_method_id_116'             => $request->input('paymentMethod'),
-            'comments_116'                      => null,
+            'date_116'                                  => $orderDate,
+            'date_text_116'				                => date(config('pulsar.datePattern') . ' H:i', $orderDate),
+            'status_id_116'                             => 1, // Outstanding
+            'ip_116'                                    => $request->ip(),  // customer IP
+            'payment_method_id_116'                     => $request->input('paymentMethod'),
+            'comments_116'                              => null,
 
             // set amounts to order
-            'subtotal_116'                      => CartProvider::instance()->subtotal,                                                              // amount without tax and without shipping
-            'discount_amount_116'               => CartProvider::instance()->discountAmount,                                                        // total amount to discount, fixed plus percentage discounts
-            'subtotal_with_discounts_116'       => CartProvider::instance()->subtotalWithDiscounts,                                                 // subtotal with discounts applied
-            'tax_amount_116'                    => CartProvider::instance()->taxAmount,                                                             // total tax amount
-            'shipping_amount_116'               => CartProvider::instance()->hasFreeShipping()? 0 :  CartProvider::instance()->shippingAmount,      // shipping amount
-            'total_116'                         => CartProvider::instance()->total,                                                                 // subtotal and shipping amount with tax
+            'subtotal_116'                              => CartProvider::instance()->subtotal,                                                              // amount without tax and without shipping
+            'discount_amount_116'                       => CartProvider::instance()->discountAmount,                                                        // total amount to discount, fixed plus percentage discounts
+            'subtotal_with_discounts_116'               => CartProvider::instance()->subtotalWithDiscounts,                                                 // subtotal with discounts applied
+            'tax_amount_116'                            => CartProvider::instance()->taxAmount,                                                             // total tax amount
+            'cart_items_total_without_discounts_116'    => CartProvider::instance()->cartItemsTotalWithoutDiscounts,                                        // total of cart items. Amount with tax, without discount and without shipping
+            'shipping_amount_116'                       => CartProvider::instance()->hasFreeShipping()? 0 :  CartProvider::instance()->shippingAmount,      // shipping amount
+            'total_116'                                 => CartProvider::instance()->total,                                                                 // subtotal and shipping amount with tax
 
             // set gift data to all order
-            'has_gift_116'                      => false,
-            'gift_from_116'                     => null,
-            'gift_to_116'                       => null,
-            'gift_message_116'                  => null,
+            'has_gift_116'                              => false,
+            'gift_from_116'                             => null,
+            'gift_to_116'                               => null,
+            'gift_message_116'                          => null,
 
             // customer data
-            'customer_id_116'                   => $customer->id_301,
-            'customer_company_116'              => $customer->company_301,
-            'customer_tin_116'                  => $customer->tin_301,
-            'customer_name_116'                 => $customer->name_301,
-            'customer_surname_116'              => $customer->surname_301,
-            'customer_email_116'                => $customer->email_301,
-            'customer_phone_116'                => $customer->phone_301,
-            'customer_mobile_116'               => $customer->mobile_301,
+            'customer_id_116'                           => $customer->id_301,
+            'customer_company_116'                      => $customer->company_301,
+            'customer_tin_116'                          => $customer->tin_301,
+            'customer_name_116'                         => $customer->name_301,
+            'customer_surname_116'                      => $customer->surname_301,
+            'customer_email_116'                        => $customer->email_301,
+            'customer_phone_116'                        => $customer->phone_301,
+            'customer_mobile_116'                       => $customer->mobile_301,
 
             // invoice data
-            'invoice_country_id_116'            => $customer->country_id_301,
-            'invoice_territorial_area_1_id_116' => $customer->territorial_area_1_id_301,
-            'invoice_territorial_area_2_id_116' => $customer->territorial_area_2_id_301,
-            'invoice_territorial_area_3_id_116' => $customer->territorial_area_3_id_301,
-            'invoice_cp_116'                    => $customer->cp_301,
-            'invoice_locality_116'              => $customer->locality_301,
-            'invoice_address_116'               => $customer->address_301,
-            'invoice_latitude_116'              => $customer->latitude_301,
-            'invoice_longitude_116'             => $customer->longitude_301,
-            'has_invoice_116'                   => $request->has('hasInvoice'),
-            'invoiced_116'                      => false,   // check if has been created invoice on billing program
+            'invoice_country_id_116'                    => $customer->country_id_301,
+            'invoice_territorial_area_1_id_116'         => $customer->territorial_area_1_id_301,
+            'invoice_territorial_area_2_id_116'         => $customer->territorial_area_2_id_301,
+            'invoice_territorial_area_3_id_116'         => $customer->territorial_area_3_id_301,
+            'invoice_cp_116'                            => $customer->cp_301,
+            'invoice_locality_116'                      => $customer->locality_301,
+            'invoice_address_116'                       => $customer->address_301,
+            'invoice_latitude_116'                      => $customer->latitude_301,
+            'invoice_longitude_116'                     => $customer->longitude_301,
+            'has_invoice_116'                           => $request->has('hasInvoice'),
+            'invoiced_116'                              => false,   // check if has been created invoice on billing program
 
             // check if there are to do a delivery
             'has_shipping_116'                  => CartProvider::instance()->hasItemTransportable()
@@ -440,9 +441,10 @@ class MarketFrontendController extends Controller
                 'data_117'                                  => json_encode(['product' => $item->options->product]),
 
                 // amounts
-                'price_117'                                 => $item->price,        // unit price without tax
-                'quantity_117'                              => $item->quantity,     // number of units
-                'subtotal_117'                              => $item->subtotal,     // subtotal without tax
+                'price_117'                                 => $item->price,                    // unit price without tax
+                'quantity_117'                              => $item->quantity,                 // number of units
+                'subtotal_117'                              => $item->subtotal,                 // subtotal without tax
+                'total_without_discounts_117'               => $item->totalWithoutDiscounts,    // total from row without discounts
 
                 // discounts
                 'discount_subtotal_percentage_117'          => $item->discountSubtotalPercentage,

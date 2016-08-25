@@ -235,7 +235,7 @@
                     <h4>Total Without shipping and without discount:</h4>
                 </div>
                 <div class="col-md-5">
-                    <h4>{{ CartProvider::instance()->getCartItemsTotalWithoutDiscount() }} €</h4>
+                    <h4>{{ CartProvider::instance()->getCartItemsTotalWithoutDiscounts() }} €</h4>
                 </div>
             </div>
             <div class="row">
