@@ -15,8 +15,7 @@
 /app/Providers/WineriesServiceProvider.php
 /app/Providers/ProjectsServiceProvider.php
 /app/Providers/PulsarServiceProvider.php
-
-/app/Providers/FacturadirectaServiceProvider.php
+/app/Providers/FacturaDirectaServiceProvider.php
 
 
 # -- Web --------------------------------------------
