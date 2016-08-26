@@ -554,9 +554,6 @@ class MarketFrontendController extends Controller
         // destroy shopping cart
         CartProvider::instance()->destroy();
 
-
-        dd('OK, pedido registrado');
-
         // Redsys Payment (debit and credit cart )
         if($request->input('paymentMethod') === '1')
         {
@@ -570,8 +567,9 @@ class MarketFrontendController extends Controller
                 $redsys->setTransactiontype('0');
                 $redsys->setTerminal('1');
 
-                // resolver las peticiones contra https
+                // important, this url is calling from RedSys server to confirm payment
                 $redsys->setNotification(route('redsysPaymentResponse'));
+
                 $redsys->setUrlOk(route('redsysPaymentResponseSuccessful'));
                 $redsys->setUrlKo(route('redsysPaymentResponseNook'));
                 $redsys->setVersion('HMAC_SHA256_V1');
@@ -593,6 +591,7 @@ class MarketFrontendController extends Controller
             }
             catch(\Exception $e)
             {
+                // log register on order
                 Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_tpv_error', ['error' => $e->getMessage()]));
 
                 echo $e->getMessage();
@@ -602,6 +601,7 @@ class MarketFrontendController extends Controller
         // PayPal Payment
         elseif($request->input('paymentMethod') === '2')
         {
+            // log register on order
             Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_paypal'));
 
             return response()->json([
@@ -623,7 +623,7 @@ class MarketFrontendController extends Controller
     {
         try
         {
-            // visit, https://github.com/ssheduardo/sermepa
+            // package obtain from , https://github.com/ssheduardo/sermepa
             $redsys     = new Tpv();
             $parameters = $redsys->getMerchantParameters($request->input('Ds_MerchantParameters'));
             $DsResponse = $parameters['Ds_Response'];
@@ -644,8 +644,11 @@ class MarketFrontendController extends Controller
                     'status_id_116' => $order->order_status_successful_id_115
                 ]);
 
-                // config here send email
+                //*******************************************************
+                // If you wan send confirmation email, this is the place
+                //*******************************************************
 
+                // log register on order
                 Order::setOrderLog($nOrder, trans('market::pulsar.message_tpv_payment_successful'));
 
                 return response()->json([
@@ -676,7 +679,7 @@ class MarketFrontendController extends Controller
     public function redsysPaymentResponseSuccessful(Request $request)
     {
         try {
-            $redsys = new Tpv();
+            $redsys     = new Tpv();
             $parameters = $redsys->getMerchantParameters($request->input("Ds_MerchantParameters"));
             $DsResponse = $parameters["Ds_Response"];
             $DsResponse += 0;
@@ -733,6 +736,10 @@ class MarketFrontendController extends Controller
      */
     public function payPalPaymentResponseSuccessful(Request $request)
     {
+        //*******************************************************
+        // If you wan send confirmation email, this is the place
+        //*******************************************************
+        
         Order::setOrderLog($request->input('order'), trans('market::pulsar.message_paypal_payment_successful'));
 
         return redirect()->route('getOrder-' . user_lang(), ['id' => $request->input('order')]);
