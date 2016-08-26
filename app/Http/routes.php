@@ -87,6 +87,13 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'auth:crm']], function(
     Route::post('/es/realizar/pedido/pago',                                                 ['as'=>'postCheckout03-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout03']);
 });
 
+Route::group(['middleware' => ['web']], function () {
+
+    /* PAYPAL */
+    Route::post('/paypal/payment/response/successful',                              ['as' => 'payPalPaymentResponseSuccessful',     'uses'	=> '\App\Http\Controllers\MarketFrontendController@payPalPaymentResponseSuccessful']);
+    Route::get('/paypal/payment/response/failure',                                  ['as' => 'payPalPaymentResponseFailure',        'uses'	=> '\App\Http\Controllers\MarketFrontendController@payPalPaymentResponseFailure']);
+});
+
 Route::group(['middleware' => ['noCsrWeb']], function() {
 
     /* REDSYS */
