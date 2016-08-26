@@ -611,11 +611,18 @@ class MarketFrontendController extends Controller
             // log register on order
             Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_paypal'));
 
-            return response()->json([
-                'status'        => 'success',
-                'order'         => $order,
-                'payPal'        => PayPalLibrary::createForm($order->id_116)
-            ]);
+            if($request->input('responseType') == 'json')
+            {
+                return response()->json([
+                    'status' => 'success',
+                    'order' => $order,
+                    'payPal' => PayPalLibrary::createForm($order->id_116)
+                ]);
+            }
+            else
+            {
+                return view('pulsar::common.views.html_display', ['html' => PayPalLibrary::executeRedirection($order->id_116)]);
+            }
         }
     }
 
