@@ -87,13 +87,13 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'auth:crm']], function(
     Route::post('/es/realizar/pedido/pago',                                                 ['as'=>'postCheckout03-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout03']);
 });
 
-Route::group(['middleware' => ['noCsrWeb', 'pulsar.https']], function() {
+Route::group(['middleware' => ['noCsrWeb']], function() {
 
     /* REDSYS */
     Route::get('/redsys/payment/response/successful',                               ['as' => 'redsysPaymentResponseSuccessful',     'uses'	=> '\App\Http\Controllers\MarketFrontendController@redsysPaymentResponseSuccessful']);
     Route::get('/redsys/payment/response/failure',                                  ['as' => 'redsysPaymentResponseFailure',        'uses'	=> '\App\Http\Controllers\MarketFrontendController@redsysPaymentResponseFailure']);
 
-    /* GOOGLE */
+    /* GOOGLE SEARCH ENGINE */
     Route::get('/search/engine',                                                    ['as' => 'searchEngine',              function(){ return view('www.content.google_search_engine');}]);
 });
 
