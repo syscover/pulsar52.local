@@ -739,7 +739,7 @@ class MarketFrontendController extends Controller
         //*******************************************************
         // If you wan send confirmation email, this is the place
         //*******************************************************
-        
+
         Order::setOrderLog($request->input('order'), trans('market::pulsar.message_paypal_payment_successful'));
 
         return redirect()->route('getOrder-' . user_lang(), ['id' => $request->input('order')]);

@@ -86,3 +86,6 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'auth:crm']], function(
     Route::get('/es/realizar/pedido/pago',                                                  ['as'=>'getCheckout03-es',          'uses'	=> '\App\Http\Controllers\MarketFrontendController@getCheckout03']);
     Route::post('/es/realizar/pedido/pago',                                                 ['as'=>'postCheckout03-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout03']);
 });
+
+/* REDSYS */
+Route::post('/redsys/payment/response',                                             ['as'=>'redsysPaymentResponse',     'uses'	=> '\App\Http\Controllers\MarketFrontendController@redsysPaymentResponse']);
