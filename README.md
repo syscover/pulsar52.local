@@ -1,19 +1,8 @@
 ## Implementation of Pulsar packages
 
-Add to composer.json this packages inside require array:
-```
-"syscover/nav-tools": "~1.0",
-"syscover/pulsar": "~1.0",
-"syscover/forms": "~1.0",
-"syscover/market": "~1.0",
-"syscover/comunik": "~1.0",
-"syscover/cms": "~1.0",
-"syscover/factura-directa": "~1.0"
-```
-
 Execute on console to load all base files of Laravel Framework:
 ```
-composer install --no-scripts
+COMPOSER=composer.production.json php composer install --no-scripts
 ```
 
 Replace in config/app.php this services providers:
@@ -79,6 +68,11 @@ php artisan db:seed --class="CrmTableSeeder"
 php artisan db:seed --class="MarketTableSeeder"
 php artisan db:seed --class="FormsTableSeeder"
 
+```
+
+To updates project, use this command
+```
+COMPOSER=composer.production.json php composer update
 ```
 
 When the installation is complete you can access these data
