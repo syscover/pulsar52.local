@@ -20,7 +20,6 @@ use Syscover\ShoppingCart\Item;
 
 class ShoppingCartController extends Controller
 {
-
     /**
      * Show shopping cart
      *

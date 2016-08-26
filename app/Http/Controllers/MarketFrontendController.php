@@ -552,7 +552,7 @@ class MarketFrontendController extends Controller
         }
 
         // destroy shopping cart
-        CartProvider::instance()->destroy();
+        //CartProvider::instance()->destroy();
 
         // Redsys Payment (debit and credit cart )
         if($request->input('paymentMethod') === '1')
@@ -571,7 +571,7 @@ class MarketFrontendController extends Controller
                 $redsys->setNotification(route('redsysPaymentResponse'));
 
                 $redsys->setUrlOk(route('redsysPaymentResponseSuccessful'));
-                $redsys->setUrlKo(route('redsysPaymentResponseNook'));
+                $redsys->setUrlKo(route('redsysPaymentResponseFailure'));
                 $redsys->setVersion('HMAC_SHA256_V1');
                 $redsys->setTradeName(config('market.redsysMode') == 'live'? config('market.redsysLiveMerchantName') : config('market.redsysTestMerchantName'));
                 $redsys->setTitular($order->customer_name_116 . ' ' . $order->customer_surname_116);
@@ -584,10 +584,17 @@ class MarketFrontendController extends Controller
 
                 Order::setOrderLog($order->id_116, trans('market::pulsar.message_customer_go_to_tpv'));
 
-                return response()->json([
-                    'status'    => 'success',
-                    'redsys'    => $redsys->createForm()
-                ]);
+                if($request->input('responseType') == 'json')
+                {
+                    return response()->json([
+                        'status'    => 'success',
+                        'redsys'    => $redsys->createForm()
+                    ]);
+                }
+                else
+                {
+                    return view('pulsar::common.views.html_display', ['html' => $redsys->executeRedirection()]);
+                }
             }
             catch(\Exception $e)
             {
