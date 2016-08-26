@@ -2,7 +2,7 @@
 
 Execute on console to load all base files of Laravel Framework:
 ```
-COMPOSER=composer.production.json php composer install --no-scripts
+composer install --no-scripts
 ```
 
 Replace in config/app.php this services providers:
@@ -70,9 +70,9 @@ php artisan db:seed --class="FormsTableSeeder"
 
 ```
 
-To updates project, use this command
+To updates on development environment on mac, use this command:
 ```
-COMPOSER=composer.production.json php composer update
+COMPOSER=composer.dev.json php /usr/local/bin/composer update
 ```
 
 When the installation is complete you can access these data

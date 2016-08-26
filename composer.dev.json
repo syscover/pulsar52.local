@@ -16,14 +16,7 @@
         "symfony/dom-crawler": "2.8.*|3.0.*",
         "sofa/eloquence": "5.2.*",
         "maatwebsite/excel": "~2.1.0",
-        "tecnickcom/tcpdf": "^6.2",
-        "syscover/nav-tools": "~1.0",
-        "syscover/pulsar": "~1.0",
-        "syscover/forms": "~1.0",
-        "syscover/market": "~1.0",
-        "syscover/comunik": "~1.0",
-        "syscover/cms": "~1.0",
-        "syscover/factura-directa": "~1.0"
+        "tecnickcom/tcpdf": "^6.2"
     },
     "autoload": {
         "classmap": [
