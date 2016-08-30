@@ -552,7 +552,7 @@ class MarketFrontendController extends Controller
         }
 
         // destroy shopping cart
-        //CartProvider::instance()->destroy();
+        CartProvider::instance()->destroy();
 
         // Redsys Payment (debit and credit cart )
         if($request->input('paymentMethod') === '1')
