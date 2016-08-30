@@ -178,7 +178,12 @@ class CustomerFrontendController extends Controller
                     $item->taxRules = new CartItemTaxRules();
 
                     // if there ara any tax rule, and product with tax rule
-                    if($taxRules->count() > 0 && $cartProducts->where('id_111', $item->id)->count() > 0 && $taxRules->get($cartProducts->where('id_111', $item->id)->first()->product_class_tax_id_111)->count() > 0)
+                    if(
+                        $taxRules->count() > 0 &&
+                        $cartProducts->where('id_111', $item->id)->count() > 0 &&
+                        is_array($taxRules->get($cartProducts->where('id_111', $item->id)->first()->product_class_tax_id_111)) &&
+                        $taxRules->get($cartProducts->where('id_111', $item->id)->first()->product_class_tax_id_111)->count() > 0
+                    )
                     {
                         // get tax rules from item
                         $itemTaxRules = $taxRules->get($cartProducts->where('id_111',$item->id)->first()->product_class_tax_id_111);
@@ -259,7 +264,12 @@ class CustomerFrontendController extends Controller
                 $item->resetTaxRules();
 
                 // if there ara any tax rule, and product with tax rule
-                if($taxRules->count() > 0 && $cartProducts->where('id_111', $item->id)->count() > 0 && $taxRules->get($cartProducts->where('id_111', $item->id)->first()->product_class_tax_id_111)->count() > 0)
+                if(
+                    $taxRules->count() > 0 &&
+                    $cartProducts->where('id_111', $item->id)->count() > 0 &&
+                    is_array($taxRules->get($cartProducts->where('id_111', $item->id)->first()->product_class_tax_id_111)) &&
+                    $taxRules->get($cartProducts->where('id_111', $item->id)->first()->product_class_tax_id_111)->count() > 0
+                )
                 {
                     // get tax rules from item
                     $itemTaxRules = $taxRules->get($cartProducts->where('id_111',$item->id)->first()->product_class_tax_id_111);
