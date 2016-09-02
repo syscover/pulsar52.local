@@ -15,6 +15,9 @@ use Syscover\Market\Models\ProductsCategories;
 use Syscover\Market\Models\TaxRule;
 use Syscover\Pulsar\Models\Attachment;
 use Syscover\Pulsar\Models\Country;
+use Syscover\Pulsar\Models\TerritorialArea1;
+use Syscover\Pulsar\Models\TerritorialArea2;
+use Syscover\Pulsar\Models\TerritorialArea3;
 use Syscover\ShoppingCart\Facades\CartProvider;
 
 /**
@@ -241,9 +244,21 @@ class MarketFrontendController extends Controller
      */
     public function getCheckout02()
     {
-        $response['cartItems']      = CartProvider::instance()->getCartItems();
-        $response['customer']       = auth('crm')->user();
-        $response['shippingData']   = CartProvider::instance()->getShippingData();
+        $response['cartItems']          = CartProvider::instance()->getCartItems();
+        $response['customer']           = auth('crm')->user();
+        $response['shippingData']       = CartProvider::instance()->getShippingData();
+
+        $response['shippingCountry']    = Country::builder()
+            ->where('lang_id_002', user_lang())
+            ->where('id_002', $response['shippingData']['country'])
+            ->first();
+
+        if($response['shippingData']['territorialArea1'] != null)
+            $response['shippingTA1']    = TerritorialArea1::builder()->find($response['shippingData']['territorialArea1']);
+        if($response['shippingData']['territorialArea2'] != null)
+            $response['shippingTA2']    = TerritorialArea2::builder()->find($response['shippingData']['territorialArea2']);
+        if($response['shippingData']['territorialArea3'] != null)
+            $response['shippingTA3']    = TerritorialArea3::builder()->find($response['shippingData']['territorialArea3']);
 
         return view('www.content.checkout_02', $response);
     }
@@ -279,12 +294,36 @@ class MarketFrontendController extends Controller
      */
     public function getCheckout03()
     {
-        $response['cartItems']      = CartProvider::instance()->getCartItems();
-        $response['customer']       = auth('crm')->user();
-        $response['shippingData']   = CartProvider::instance()->getShippingData();
-        $response['invoice']        = CartProvider::instance()->getInvoice();
+        $response['cartItems']          = CartProvider::instance()->getCartItems();
+        $response['customer']           = auth('crm')->user();
+        $response['shippingData']       = CartProvider::instance()->getShippingData();
+        $response['invoice']            = CartProvider::instance()->getInvoice();
 
-        $response['paymentMethods'] = PaymentMethod::builder()
+        $response['shippingCountry']    = Country::builder()
+            ->where('lang_id_002', user_lang())
+            ->where('id_002', $response['shippingData']['country'])
+            ->first();
+
+        if($response['shippingData']['territorialArea1'] != null)
+            $response['shippingTA1']    = TerritorialArea1::builder()->find($response['shippingData']['territorialArea1']);
+        if($response['shippingData']['territorialArea2'] != null)
+            $response['shippingTA2']    = TerritorialArea2::builder()->find($response['shippingData']['territorialArea2']);
+        if($response['shippingData']['territorialArea3'] != null)
+            $response['shippingTA3']    = TerritorialArea3::builder()->find($response['shippingData']['territorialArea3']);
+
+        $response['invoiceCountry']     = Country::builder()
+            ->where('lang_id_002', user_lang())
+            ->where('id_002', $response['invoice']['country'])
+            ->first();
+
+        if($response['invoice']['territorialArea1'] != null)
+            $response['invoiceTA1']     = TerritorialArea1::builder()->find($response['invoice']['territorialArea1']);
+        if($response['invoice']['territorialArea2'] != null)
+            $response['invoiceTA2']     = TerritorialArea2::builder()->find($response['invoice']['territorialArea2']);
+        if($response['invoice']['territorialArea3'] != null)
+            $response['invoiceTA3']     = TerritorialArea3::builder()->find($response['invoice']['territorialArea3']);
+
+        $response['paymentMethods']     = PaymentMethod::builder()
             ->where('lang_id_115', user_lang())
             ->where('active_115', true)
             ->orderBy('sorting_115', 'asc')

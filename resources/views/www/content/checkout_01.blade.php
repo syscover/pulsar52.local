@@ -5,7 +5,6 @@
 @section('head')
     @parent
     <script src="{{ asset('packages/syscover/pulsar/vendor/getaddress/js/jquery.getaddress.js') }}"></script>
-
     <script>
         $(document).ready(function() {
             $.getAddress({
@@ -193,17 +192,17 @@
                 </div>
                 <div class="form-group" id="territorialArea1Wrapper">
                     <label for="territorialArea1" id="territorialArea1Label"></label>
-                    <select class="form-control" id="territorialArea1" name="territorialArea1" required>
+                    <select class="form-control" id="territorialArea1" name="territorialArea1">
                     </select>
                 </div>
                 <div class="form-group" id="territorialArea2Wrapper">
                     <label for="territorialArea2" id="territorialArea2Label"></label>
-                    <select class="form-control" id="territorialArea2" name="territorialArea2" required>
+                    <select class="form-control" id="territorialArea2" name="territorialArea2">
                     </select>
                 </div>
                 <div class="form-group" id="territorialArea3Wrapper">
                     <label for="territorialArea3" id="territorialArea3Label"></label>
-                    <select class="form-control" id="territorialArea3" name="territorialArea3" required>
+                    <select class="form-control" id="territorialArea3" name="territorialArea3">
                     </select>
                 </div>
 

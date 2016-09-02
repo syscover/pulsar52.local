@@ -193,20 +193,26 @@
 
                 <div class="form-group">
                     <label>Country</label><br>
-                    {{ $shippingData['country'] }}
+                    {{ $shippingCountry->name_002 }}
                 </div>
-                <div class="form-group">
-                    <label>??</label><br>
-                    {{ $shippingData['territorialArea1'] }}
-                </div>
-                <div class="form-group">
-                    <label>??</label><br>
-                    {{ $shippingData['territorialArea2'] }}
-                </div>
-                <div class="form-group">
-                    <label>??</label><br>
-                    {{ $shippingData['territorialArea3'] }}
-                </div>
+                @if(isset($shippingTA1))
+                    <div class="form-group">
+                        <label>{{ $shippingCountry->territorial_area_1_002 }}</label><br>
+                        {{ $shippingTA1->name_003 }}
+                    </div>
+                @endif
+                @if(isset($shippingTA2))
+                    <div class="form-group">
+                        <label>{{ $shippingCountry->territorial_area_2_002 }}</label><br>
+                        {{ $shippingTA2->name_004 }}
+                    </div>
+                @endif
+                @if(isset($shippingTA3))
+                    <div class="form-group">
+                        <label>{{ $shippingCountry->territorial_area_3_002 }}</label><br>
+                        {{ $shippingTA2->name_005 }}
+                    </div>
+                @endif
 
                 <div class="form-group">
                     <label for="cp">CP</label><br>
@@ -239,21 +245,26 @@
 
                 <div class="form-group">
                     <label>Country</label><br>
-                    {{ $invoice['country'] }}
+                    {{ $invoiceCountry->name_002 }}
                 </div>
-                <div class="form-group">
-                    <label>??</label><br>
-                    {{ $invoice['territorialArea1'] }}
-                </div>
-                <div class="form-group">
-                    <label>??</label><br>
-                    {{ $invoice['territorialArea2'] }}
-                </div>
-                <div class="form-group">
-                    <label>??</label><br>
-                    {{ $invoice['territorialArea3'] }}
-                </div>
-
+                @if(isset($invoiceTA1))
+                    <div class="form-group">
+                        <label>{{ $invoiceCountry->territorial_area_1_002 }}</label><br>
+                        {{ $invoiceTA1->name_003 }}
+                    </div>
+                @endif
+                @if(isset($invoiceTA2))
+                    <div class="form-group">
+                        <label>{{ $invoiceCountry->territorial_area_2_002 }}</label><br>
+                        {{ $invoiceTA2->name_004 }}
+                    </div>
+                @endif
+                @if(isset($invoiceTA3))
+                    <div class="form-group">
+                        <label>{{ $invoiceCountry->territorial_area_3_002 }}</label><br>
+                        {{ $invoiceTA3->name_005 }}
+                    </div>
+                @endif
                 <div class="form-group">
                     <label for="cp">CP</label><br>
                     {{ $invoice['cp'] }}

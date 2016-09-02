@@ -191,21 +191,26 @@
 
                 <div class="form-group">
                     <label>Country</label><br>
-                    {{ $shippingData['country'] }}
+                    {{ $shippingCountry->name_002 }}
                 </div>
-                <div class="form-group">
-                    <label>??</label><br>
-                    {{ $shippingData['territorialArea1'] }}
-                </div>
-                <div class="form-group">
-                    <label>??</label><br>
-                    {{ $shippingData['territorialArea2'] }}
-                </div>
-                <div class="form-group">
-                    <label>??</label><br>
-                    {{ $shippingData['territorialArea3'] }}
-                </div>
-
+                @if(isset($shippingTA1))
+                    <div class="form-group">
+                        <label>{{ $shippingCountry->territorial_area_1_002 }}</label><br>
+                        {{ $shippingTA1->name_003 }}
+                    </div>
+                @endif
+                @if(isset($shippingTA2))
+                    <div class="form-group">
+                        <label>{{ $shippingCountry->territorial_area_2_002 }}</label><br>
+                        {{ $shippingTA2->name_004 }}
+                    </div>
+                @endif
+                @if(isset($shippingTA3))
+                    <div class="form-group">
+                        <label>{{ $shippingCountry->territorial_area_3_002 }}</label><br>
+                        {{ $shippingTA2->name_005 }}
+                    </div>
+                @endif
                 <div class="form-group">
                     <label for="cp">CP</label><br>
                     {{ $shippingData['cp'] }}
@@ -243,17 +248,17 @@
                 </div>
                 <div class="form-group" id="territorialArea1Wrapper">
                     <label for="territorialArea1" id="territorialArea1Label"></label>
-                    <select class="form-control" id="territorialArea1" name="territorialArea1" required>
+                    <select class="form-control" id="territorialArea1" name="territorialArea1">
                     </select>
                 </div>
                 <div class="form-group" id="territorialArea2Wrapper">
                     <label for="territorialArea2" id="territorialArea2Label"></label>
-                    <select class="form-control" id="territorialArea2" name="territorialArea2" required>
+                    <select class="form-control" id="territorialArea2" name="territorialArea2">
                     </select>
                 </div>
                 <div class="form-group" id="territorialArea3Wrapper">
                     <label for="territorialArea3" id="territorialArea3Label"></label>
-                    <select class="form-control" id="territorialArea3" name="territorialArea3" required>
+                    <select class="form-control" id="territorialArea3" name="territorialArea3">
                     </select>
                 </div>
 
