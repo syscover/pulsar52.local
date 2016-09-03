@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['middleware' => ['web', 'pulsar.navTools']], function () {
+Route::group(['middleware' => ['pulsar.navTools']], function () {
 
     Route::get('/',                                                                         ['as'=>'home',                      'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
     Route::get('/es',                                                                       ['as'=>'home-es',                   'uses'	=> '\App\Http\Controllers\WebFrontendController@home']);
@@ -46,7 +46,7 @@ Route::group(['middleware' => ['web', 'pulsar.navTools']], function () {
 
 // Route with pulsar.taxRule, this instance taxCountry and taxCustomerClass from data customer loged,
 // necessary to show tax products according to the customer.
-Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], function () {
+Route::group(['middleware' => ['pulsar.navTools', 'pulsar.taxRule']], function () {
 
     // MARKET ROUTES
     // EN
@@ -58,7 +58,7 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'pulsar.taxRule']], fun
     Route::get('/es/producto/{category}/{slug}',                                            ['as'=>'product-es',                'uses'	=> '\App\Http\Controllers\MarketFrontendController@getProduct']);
 });
 
-Route::group(['middleware' => ['web', 'pulsar.navTools', 'auth:crm']], function() {
+Route::group(['middleware' => ['pulsar.navTools', 'auth:crm']], function() {
 
     // CUSTOMER ACCOUNT
     // EN
@@ -87,22 +87,19 @@ Route::group(['middleware' => ['web', 'pulsar.navTools', 'auth:crm']], function(
     Route::post('/es/realizar/pedido/pago',                                                 ['as'=>'postCheckout03-es',         'uses'	=> '\App\Http\Controllers\MarketFrontendController@postCheckout03']);
 });
 
-Route::group(['middleware' => ['web']], function () {
-
-    /* PAYPAL */
-    Route::post('/paypal/payment/response/successful',                              ['as' => 'payPalPaymentResponseSuccessful',     'uses'	=> '\App\Http\Controllers\MarketFrontendController@payPalPaymentResponseSuccessful']);
-    Route::get('/paypal/payment/response/failure',                                  ['as' => 'payPalPaymentResponseFailure',        'uses'	=> '\App\Http\Controllers\MarketFrontendController@payPalPaymentResponseFailure']);
-});
-
 Route::group(['middleware' => ['noCsrWeb']], function() {
 
     /* REDSYS */
-    Route::get('/redsys/payment/response/successful',                               ['as' => 'redsysPaymentResponseSuccessful',     'uses'	=> '\App\Http\Controllers\MarketFrontendController@redsysPaymentResponseSuccessful']);
-    Route::get('/redsys/payment/response/failure',                                  ['as' => 'redsysPaymentResponseFailure',        'uses'	=> '\App\Http\Controllers\MarketFrontendController@redsysPaymentResponseFailure']);
+    Route::get('/redsys/payment/response/successful',                                       ['as' => 'redsysPaymentResponseSuccessful',     'uses'	=> '\App\Http\Controllers\MarketFrontendController@redsysPaymentResponseSuccessful']);
+    Route::get('/redsys/payment/response/failure',                                          ['as' => 'redsysPaymentResponseFailure',        'uses'	=> '\App\Http\Controllers\MarketFrontendController@redsysPaymentResponseFailure']);
 
     /* GOOGLE SEARCH ENGINE */
-    Route::get('/search/engine',                                                    ['as' => 'searchEngine',              function(){ return view('www.content.google_search_engine');}]);
+    Route::get('/search/engine',                                                            ['as' => 'searchEngine',              function(){ return view('www.content.google_search_engine');}]);
+
+    /* REDSYS */
+    Route::post('/redsys/payment/response',                                                 ['as'=>'redsysPaymentResponse',     'uses'	=> '\App\Http\Controllers\MarketFrontendController@redsysPaymentResponse']);
 });
 
-/* REDSYS */
-Route::post('/redsys/payment/response',                                             ['as'=>'redsysPaymentResponse',     'uses'	=> '\App\Http\Controllers\MarketFrontendController@redsysPaymentResponse']);
+/* PAYPAL */
+Route::post('/paypal/payment/response/successful',                                          ['as' => 'payPalPaymentResponseSuccessful',     'uses'	=> '\App\Http\Controllers\MarketFrontendController@payPalPaymentResponseSuccessful']);
+Route::get('/paypal/payment/response/failure',                                              ['as' => 'payPalPaymentResponseFailure',        'uses'	=> '\App\Http\Controllers\MarketFrontendController@payPalPaymentResponseFailure']);
